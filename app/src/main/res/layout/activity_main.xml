@@ -10,8 +10,7 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/f_all_movies"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:name="com.filundmoshpit.mymovies.fragments.main.AllMoviesFragment" />
-
+        android:layout_height="match_parent"
+        android:name="com.filundmoshpit.mymovies.fragments.all_movies.AllMoviesFragment" />
 
 </LinearLayout>
