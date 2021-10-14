@@ -23,4 +23,12 @@ class MoviesViewModel : ViewModel() {
             liveData.postValue(updatedData as ArrayList<Movie>)
         }
     }
+
+    fun replace(list: List<Movie>) {
+        liveData.postValue(list as ArrayList<Movie>)
+    }
+
+    fun clear() {
+        liveData.postValue(ArrayList())
+    }
 }
