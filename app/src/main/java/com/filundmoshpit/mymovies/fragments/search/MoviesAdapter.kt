@@ -1,11 +1,11 @@
-package com.filundmoshpit.mymovies.fragments.all_movies
+package com.filundmoshpit.mymovies.fragments.search
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +14,10 @@ import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.data.Movie
 
 class MoviesAdapter : ListAdapter<Movie, MoviesAdapter.MoviesViewHolder>(MovieDiffCallback) {
+
+    companion object {
+        var count = 0
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -39,13 +43,17 @@ class MoviesAdapter : ListAdapter<Movie, MoviesAdapter.MoviesViewHolder>(MovieDi
         return count
     }
 
-    inner class MoviesViewHolder(private val item: View) : RecyclerView.ViewHolder(item) {
+    inner class MoviesViewHolder(private val item: View) : RecyclerView.ViewHolder(item), View.OnLongClickListener {
 
         private var name: TextView = itemView.findViewById(R.id.movie_name)
         private var description: TextView = itemView.findViewById(R.id.movie_description)
         private var poster: ImageView = itemView.findViewById(R.id.movie_poster)
 
 //        private var movie: Movie? = null
+
+        init {
+            item.setOnLongClickListener(this)
+        }
 
         fun bind(movie: Movie) {
 //            this.movie = movie
@@ -55,28 +63,25 @@ class MoviesAdapter : ListAdapter<Movie, MoviesAdapter.MoviesViewHolder>(MovieDi
             Glide.with(item)
                 .load(movie.image)
                 .into(poster)
+        }
 
-            Log.d("MOVIE", "ID ${movie.id} : ${movie.image}")
+        override fun onLongClick(view: View?): Boolean {
+            Toast.makeText(view?.context, "long click", Toast.LENGTH_SHORT).show()
 
-            //setName(movie.name)
-            //setDescription(movie.description)
+            return true
         }
     }
 
-    companion object {
-        var count = 0
-    }
-}
+    object MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
+        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+            return oldItem == newItem
+        }
 
-object MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
-    override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-        return oldItem == newItem
-    }
-
-    override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
-        return oldItem.id == newItem.id
-                && oldItem.name == newItem.name
-                && oldItem.description == newItem.description
-                //&& oldItem.image == newItem.image
+        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+            return oldItem.id == newItem.id
+                    && oldItem.name == newItem.name
+                    && oldItem.description == newItem.description
+                    && oldItem.image == newItem.image
+        }
     }
 }

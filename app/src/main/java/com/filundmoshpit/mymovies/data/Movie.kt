@@ -1,5 +1,9 @@
 package com.filundmoshpit.mymovies.data
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -7,7 +11,10 @@ import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 import java.lang.reflect.Type
 
+@Entity
+@TypeConverters(Movie.RoomRatingConverter::class)
 data class Movie(
+    @PrimaryKey
     @SerializedName("id")
     val id: Int,
 
@@ -18,16 +25,46 @@ data class Movie(
     val description: String?,
 
     @SerializedName("poster")
-    @JsonAdapter(PosterDeserializer::class)
-    val image: String
-)
+    @JsonAdapter(GsonPosterDeserializer::class)
+    val image: String,
 
-object PosterDeserializer : JsonDeserializer<String> {
-    override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): String? {
-        return json?.run {
-            asJsonObject
-            .get("previewUrl")
-            .asString
+    @SerializedName("rating")
+    @JsonAdapter(GsonRatingDeserializer::class)
+    val rating: HashMap<String, Int>
+) {
+    //Gson
+    object GsonPosterDeserializer : JsonDeserializer<String> {
+        override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): String {
+            return json?.run { asJsonObject.get("previewUrl").asString } ?: ""
+        }
+    }
+
+    object GsonRatingDeserializer : JsonDeserializer<HashMap<String, Int>> {
+        override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): HashMap<String, Int> {
+            val result = HashMap<String, Int>()
+
+            json?.run {
+                val keys = asJsonObject.keySet()
+
+                for (key in keys) {
+                    result[key] = asJsonObject.get(key).asInt
+                }
+            }
+
+            return result
+        }
+    }
+
+    //Room
+    object RoomRatingConverter {
+        @TypeConverter
+        fun fromRating(ratingHM: HashMap<String, Int>): String {
+            return ""
+        }
+
+        @TypeConverter
+        fun toRating(value: String): HashMap<String, Int> {
+            return HashMap<String, Int>()
         }
     }
 }
