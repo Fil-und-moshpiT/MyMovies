@@ -5,26 +5,31 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.room.Room
+import com.filundmoshpit.mymovies.data.MoviesRepositoryImpl
 import com.filundmoshpit.mymovies.data.external.KinopoiskAPI
 import com.filundmoshpit.mymovies.data.internal.MovieDAO
 import com.filundmoshpit.mymovies.data.internal.MoviesDatabase
-import com.filundmoshpit.mymovies.fragments.favourites.FavouritesFragment
-import com.filundmoshpit.mymovies.fragments.search.SearchFragment
-import com.filundmoshpit.mymovies.fragments.watch_later.WatchLaterFragment
+import com.filundmoshpit.mymovies.domain.FavouritesUseCase
+import com.filundmoshpit.mymovies.domain.MoviesRepository
+import com.filundmoshpit.mymovies.domain.SearchUseCase
+import com.filundmoshpit.mymovies.presentation.favourites.FavouritesFragment
+import com.filundmoshpit.mymovies.presentation.search.SearchFragment
+import com.filundmoshpit.mymovies.presentation.watch_later.WatchLaterFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 /*
 TODO:
     +Add "Search" fragment (Retrofit)
-    Add Repository class for local and remote data sources
+    +Add Repository class for local and remote data sources
     Add "Watch later" fragment (Room)
-    Add "Favourites" fragment (Room)
-    Add bottom navigation menu
-    Check MVVM
+    +Add "Favourites" fragment (Room)
+    +Add bottom navigation menu
+    +Check MVVM
     Move all strings in resources
     Add translation
 */
@@ -32,8 +37,12 @@ TODO:
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        lateinit var searchService: KinopoiskAPI
-        lateinit var databaseService: MovieDAO
+        private lateinit var searchService: KinopoiskAPI
+        private lateinit var databaseService: MovieDAO
+        private lateinit var moviesRepository: MoviesRepository
+
+        lateinit var searchUseCase: SearchUseCase
+        lateinit var favouritesUseCase: FavouritesUseCase
     }
 
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -51,6 +60,11 @@ class MainActivity : AppCompatActivity() {
         //Data services configuration
         configureRetrofit()
         configureRoom()
+
+        moviesRepository = MoviesRepositoryImpl(searchService, databaseService)
+
+        searchUseCase = SearchUseCase(moviesRepository)
+        favouritesUseCase = FavouritesUseCase(moviesRepository)
 
         //Set search fragment as default
         openFragment(fragmentSearch)
@@ -89,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                 .addQueryParameter("field", "name")
                 //.addQueryParameter("limit", "2")
                 .addQueryParameter("isStrict", "false")
-                .addQueryParameter("token", "ZQQ8GMN-TN54SGK-NB3MKEC-ZKB8V06").build()
+                .addQueryParameter("token", BuildConfig.KINOPOISK_API_KEY).build()
 
             val request = it.request().newBuilder()
                 .url(url)
@@ -98,11 +112,11 @@ class MainActivity : AppCompatActivity() {
             it.proceed(request)
         }
 
-        //val loggingInterceptor = HttpLoggingInterceptor()
-        //loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
         val httpClient = OkHttpClient.Builder()
-            //.addInterceptor(loggingInterceptor)
+            .addInterceptor(loggingInterceptor)
             .addInterceptor(queryInterceptor)
             .build()
 

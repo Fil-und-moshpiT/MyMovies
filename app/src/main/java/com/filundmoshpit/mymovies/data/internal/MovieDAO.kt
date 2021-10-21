@@ -1,25 +1,43 @@
 package com.filundmoshpit.mymovies.data.internal
 
 import androidx.room.*
-import com.filundmoshpit.mymovies.data.Movie
 
 @Dao
 interface MovieDAO {
 
     @Insert
-    fun insert(movies: List<Movie>)
+    fun insert(movie: InternalMovie)
 
-    @Delete
-    fun delete(movie: Movie)
+    @Insert
+    fun insert(movies: List<InternalMovie>)
 
-    @Query("SELECT * FROM movie")
-    fun getAll(): List<Movie>
+//    @Delete
+//    fun delete(movie: InternalMovie)
 
-    @Query("SELECT * FROM movie WHERE id = :id")
-    fun getById(id: Int): List<Movie>
+    @Query("SELECT * FROM internalmovie WHERE id = :id")
+    fun getById(id: Int): List<InternalMovie>
+
+    @Query("SELECT * FROM internalmovie WHERE internalmovie.favourite")
+    fun getFavourites(): List<InternalMovie>
+
+//    @Query("SELECT * FROM internalmovie")
+//    fun getAll(): List<InternalMovie>
+
+    @Query("UPDATE internalmovie SET favourite = :favourite WHERE id = :id")
+    fun updateFavourite(id: Int, favourite: Boolean)
+
+    fun setFavourite(movie: InternalMovie, favourite: Boolean) {
+        val found = getById(movie.id)
+
+        if (found.isEmpty()) {
+            insert(movie)
+        }
+
+        updateFavourite(movie.id, favourite)
+    }
 }
 
-@Database(entities = [Movie::class], version = 1)
+@Database(entities = [InternalMovie::class], version = 1)
 abstract class MoviesDatabase : RoomDatabase() {
     abstract fun movieDAO(): MovieDAO
 }

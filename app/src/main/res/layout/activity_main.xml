@@ -10,7 +10,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_main"
-        android:name="com.filundmoshpit.mymovies.fragments.search.SearchFragment"
+        android:name="com.filundmoshpit.mymovies.presentation.search.SearchFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"

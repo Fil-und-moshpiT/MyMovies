@@ -1,9 +1,7 @@
-package com.filundmoshpit.mymovies.data
+package com.filundmoshpit.mymovies.data.external
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
+import com.filundmoshpit.mymovies.MainActivity
+import com.filundmoshpit.mymovies.domain.Movie
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -11,10 +9,7 @@ import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 import java.lang.reflect.Type
 
-@Entity
-@TypeConverters(Movie.RoomRatingConverter::class)
-data class Movie(
-    @PrimaryKey
+data class ExternalMovie(
     @SerializedName("id")
     val id: Int,
 
@@ -32,6 +27,12 @@ data class Movie(
     @JsonAdapter(GsonRatingDeserializer::class)
     val rating: HashMap<String, Int>
 ) {
+    fun toMovie(): Movie {
+        val movie = Movie(id, name, description ?: "", image, rating)
+
+        return movie
+    }
+
     //Gson
     object GsonPosterDeserializer : JsonDeserializer<String> {
         override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): String {
@@ -52,19 +53,6 @@ data class Movie(
             }
 
             return result
-        }
-    }
-
-    //Room
-    object RoomRatingConverter {
-        @TypeConverter
-        fun fromRating(ratingHM: HashMap<String, Int>): String {
-            return ""
-        }
-
-        @TypeConverter
-        fun toRating(value: String): HashMap<String, Int> {
-            return HashMap<String, Int>()
         }
     }
 }
