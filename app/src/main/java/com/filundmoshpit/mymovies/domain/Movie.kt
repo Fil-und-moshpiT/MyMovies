@@ -11,32 +11,28 @@ class Movie(
     private var favourite: Boolean = false
     private var watchLater: Boolean = false
 
-    fun getID() : Int {
-        return id
-    }
+    fun getID() = id
 
-    fun getName() : String {
-        return name
-    }
+    fun getName() = name
 
-    fun getDescription() : String {
-        return description
-    }
+    fun getDescription() = description
 
-    fun getImage() : String {
-        return image
-    }
+    fun getImage() = image
 
-    fun getFavourite() : Boolean {
-        return favourite
+    fun getFavourite() = favourite
+
+    fun getWatchLater() = watchLater
+
+    fun changeFavourite() {
+        favourite = !favourite
     }
 
     fun setFavourite(value: Boolean) {
         favourite = value
     }
 
-    fun getWatchLater() : Boolean {
-        return watchLater
+    fun changeWatchLater() {
+        watchLater = !watchLater
     }
 
     fun setWatchLater(value: Boolean) {

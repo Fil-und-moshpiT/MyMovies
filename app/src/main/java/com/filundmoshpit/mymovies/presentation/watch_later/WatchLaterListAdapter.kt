@@ -1,4 +1,4 @@
-package com.filundmoshpit.mymovies.presentation.favourites
+package com.filundmoshpit.mymovies.presentation.watch_later
 
 import android.view.LayoutInflater
 import android.view.View
@@ -13,8 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.domain.Movie
+import com.filundmoshpit.mymovies.presentation.search.SearchViewModel
 
-class FavouritesListAdapter : ListAdapter<Movie, FavouritesListAdapter.MoviesViewHolder>(MovieDiffCallback) {
+class WatchLaterListAdapter(val viewModel: WatchLaterViewModel) : ListAdapter<Movie, WatchLaterListAdapter.MoviesViewHolder>(MovieDiffCallback) {
 
     companion object {
         var count = 0
@@ -55,6 +56,23 @@ class FavouritesListAdapter : ListAdapter<Movie, FavouritesListAdapter.MoviesVie
 
         private var movie: Movie? = null
 
+        init {
+            favourite.setOnClickListener {
+                if (movie != null) {
+                    val currentMovie = movie!!
+
+                    //currentMovie.setFavourite(true)
+                    currentMovie.changeFavourite()
+
+                    viewModel.updateFavourite(currentMovie)
+
+                    setIcons()
+
+                    //Toast.makeText(it.context, "Favourite: ${currentMovie.getName()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
         fun bind(movie: Movie) {
             this.movie = movie
             this.name.text = movie.getName()
@@ -68,9 +86,15 @@ class FavouritesListAdapter : ListAdapter<Movie, FavouritesListAdapter.MoviesVie
         }
 
         private fun setIcons() {
-            //Icons are always invisible on this ViewHolder
-            favourite.visibility = View.INVISIBLE
+            //Watch later icon are always invisible on this ViewHolder
             watchLater.visibility = View.INVISIBLE
+
+            if (movie?.getFavourite() == true) {
+                favourite.setImageDrawable(AppCompatResources.getDrawable(item.context, R.drawable.ic_list_item_favourite_checked))
+            }
+            else {
+                favourite.setImageDrawable(AppCompatResources.getDrawable(item.context, R.drawable.ic_list_item_favourite_unchecked))
+            }
         }
     }
 

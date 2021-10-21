@@ -8,11 +8,11 @@ class SearchUseCase(private val repository: MoviesRepository) {
         return repository.search(query)
     }
 
-    fun addFavourite(movie: Movie) {
-        repository.addFavourite(movie)
+    fun updateFavourite(movie: Movie) {
+        repository.updateFavourite(movie)
     }
 
-    fun addWatchLater(movie: Movie) {
-        repository.addWatchLater(movie)
+    fun updateWatchLater(movie: Movie) {
+        repository.updateWatchLater(movie)
     }
 }

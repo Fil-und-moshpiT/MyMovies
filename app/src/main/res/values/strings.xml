@@ -6,4 +6,5 @@
     <string name="watch">Watch</string>
     <string name="search_empty_list_label">Nothing was found</string>
     <string name="favourites_empty_list_label">There is no favourite movies</string>
+    <string name="watch_later_empty_list_label">There is no movies to watch later</string>
 </resources>

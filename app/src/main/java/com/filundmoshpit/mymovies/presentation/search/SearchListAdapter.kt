@@ -60,13 +60,29 @@ class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<Movie, Sea
                 if (movie != null) {
                     val currentMovie = movie!!
 
-                    currentMovie.setFavourite(true)
+                    //currentMovie.setFavourite(true)
+                    currentMovie.changeFavourite()
 
-                    viewModel.addFavourite(currentMovie)
+                    viewModel.updateFavourite(currentMovie)
 
                     setIcons()
 
-                    Toast.makeText(it.context, "long click ${currentMovie.getName()}", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(it.context, "Favourite: ${currentMovie.getName()}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            watchLater.setOnClickListener {
+                if (movie != null) {
+                    val currentMovie = movie!!
+
+                    //currentMovie.setWatchLater(true)
+                    currentMovie.changeWatchLater()
+
+                    viewModel.updateWatchLater(currentMovie)
+
+                    setIcons()
+
+                    //Toast.makeText(it.context, "Watch later: ${currentMovie.getName()}", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -97,9 +113,6 @@ class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<Movie, Sea
             else {
                 watchLater.setImageDrawable(AppCompatResources.getDrawable(item.context, R.drawable.ic_list_item_watch_later_unchecked))
             }
-
-//            favourite.visibility = if (movie?.getFavourite() == true) View.VISIBLE else View.INVISIBLE
-//            watchLater.visibility = if (movie?.getWatchLater() == true) View.VISIBLE else View.INVISIBLE
         }
     }
 

@@ -20,20 +20,33 @@ interface MovieDAO {
     @Query("SELECT * FROM internalmovie WHERE internalmovie.favourite")
     fun getFavourites(): List<InternalMovie>
 
-//    @Query("SELECT * FROM internalmovie")
-//    fun getAll(): List<InternalMovie>
+    @Query("UPDATE internalmovie SET favourite = :value WHERE id = :id")
+    fun updateFavouriteRequest(id: Int, value: Boolean)
 
-    @Query("UPDATE internalmovie SET favourite = :favourite WHERE id = :id")
-    fun updateFavourite(id: Int, favourite: Boolean)
-
-    fun setFavourite(movie: InternalMovie, favourite: Boolean) {
+    fun updateFavourite(movie: InternalMovie) {
         val found = getById(movie.id)
 
         if (found.isEmpty()) {
             insert(movie)
         }
 
-        updateFavourite(movie.id, favourite)
+        updateFavouriteRequest(movie.id, movie.favourite)
+    }
+
+    @Query("SELECT * FROM internalmovie WHERE internalmovie.watchLater")
+    fun getWatchLater(): List<InternalMovie>
+
+    @Query("UPDATE internalmovie SET watchLater = :value WHERE id = :id")
+    fun updateWatchLaterRequest(id: Int, value: Boolean)
+
+    fun updateWatchLater(movie: InternalMovie) {
+        val found = getById(movie.id)
+
+        if (found.isEmpty()) {
+            insert(movie)
+        }
+
+        updateWatchLaterRequest(movie.id, movie.watchLater)
     }
 }
 

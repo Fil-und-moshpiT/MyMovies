@@ -97,15 +97,15 @@ class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
         }
     }
 
-    fun addFavourite(movie: Movie) {
+    fun updateFavourite(movie: Movie) {
         GlobalScope.launch(Dispatchers.IO) {
-            useCase.addFavourite(movie)
+            useCase.updateFavourite(movie)
         }
     }
 
-    fun addWatchLater(movie: Movie) {
+    fun updateWatchLater(movie: Movie) {
         GlobalScope.launch(Dispatchers.IO) {
-            useCase.addWatchLater(movie)
+            useCase.updateWatchLater(movie)
         }
     }
 }

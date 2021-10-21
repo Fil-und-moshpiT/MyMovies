@@ -12,6 +12,7 @@ import com.filundmoshpit.mymovies.data.internal.MoviesDatabase
 import com.filundmoshpit.mymovies.domain.FavouritesUseCase
 import com.filundmoshpit.mymovies.domain.MoviesRepository
 import com.filundmoshpit.mymovies.domain.SearchUseCase
+import com.filundmoshpit.mymovies.domain.WatchLaterUseCase
 import com.filundmoshpit.mymovies.presentation.favourites.FavouritesFragment
 import com.filundmoshpit.mymovies.presentation.search.SearchFragment
 import com.filundmoshpit.mymovies.presentation.watch_later.WatchLaterFragment
@@ -26,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 TODO:
     +Add "Search" fragment (Retrofit)
     +Add Repository class for local and remote data sources
-    Add "Watch later" fragment (Room)
+    +Add "Watch later" fragment (Room)
     +Add "Favourites" fragment (Room)
     +Add bottom navigation menu
     +Check MVVM
@@ -42,20 +43,18 @@ class MainActivity : AppCompatActivity() {
         private lateinit var moviesRepository: MoviesRepository
 
         lateinit var searchUseCase: SearchUseCase
+        lateinit var watchLaterUseCase: WatchLaterUseCase
         lateinit var favouritesUseCase: FavouritesUseCase
     }
 
     private lateinit var bottomNavigationView: BottomNavigationView
-    private val fragmentSearch = SearchFragment()
-    private val fragmentFavourite = FavouritesFragment()
+    private val fragmentSearch     = SearchFragment()
     private val fragmentWatchLater = WatchLaterFragment()
+    private val fragmentFavourite  = FavouritesFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        //ViewModel initialization
-//        ViewModelProvider(this).get(SearchViewModel::class.java)
 
         //Data services configuration
         configureRetrofit()
@@ -63,7 +62,8 @@ class MainActivity : AppCompatActivity() {
 
         moviesRepository = MoviesRepositoryImpl(searchService, databaseService)
 
-        searchUseCase = SearchUseCase(moviesRepository)
+        searchUseCase     = SearchUseCase(moviesRepository)
+        watchLaterUseCase = WatchLaterUseCase(moviesRepository)
         favouritesUseCase = FavouritesUseCase(moviesRepository)
 
         //Set search fragment as default
@@ -76,12 +76,12 @@ class MainActivity : AppCompatActivity() {
                     openFragment(fragmentSearch)
                     return@setOnItemSelectedListener true
                 }
-                R.id.navigation_bar_item_favourites -> {
-                    openFragment(fragmentFavourite)
-                    return@setOnItemSelectedListener true
-                }
                 R.id.navigation_bar_item_watch_later -> {
                     openFragment(fragmentWatchLater)
+                    return@setOnItemSelectedListener true
+                }
+                R.id.navigation_bar_item_favourites -> {
+                    openFragment(fragmentFavourite)
                     return@setOnItemSelectedListener true
                 }
                 else -> {

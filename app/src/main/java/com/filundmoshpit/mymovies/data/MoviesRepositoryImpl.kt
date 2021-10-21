@@ -26,22 +26,6 @@ class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val inter
             }
         }
 
-        /*kinopoiskAPI.search(query).enqueue(
-            object : Callback<SearchResponse> {
-                override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
-                    val searchResponse = response.body()?.docs
-
-                    if (searchResponse != null) {
-                        for (externalMovie in searchResponse) {
-                            result.add(externalMovie.toMovie())
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {}
-            }
-        )*/
-
         for (movie in result) {
             var favourite = false
             var watchlater = false
@@ -59,7 +43,7 @@ class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val inter
         return result
     }
 
-    override fun addFavourite(movie: Movie) {
+    override fun updateFavourite(movie: Movie) {
         val internalMovie = InternalMovie(
             movie.getID(),
             movie.getName(),
@@ -70,7 +54,7 @@ class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val inter
             movie.getWatchLater()
         )
 
-        internal.setFavourite(internalMovie, true)
+        internal.updateFavourite(internalMovie)
     }
 
     override fun getFavourites(): List<Movie> {
@@ -84,11 +68,28 @@ class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val inter
         return result
     }
 
-    override fun addWatchLater(movie: Movie) {
-        TODO("Not yet implemented")
+    override fun updateWatchLater(movie: Movie) {
+        val internalMovie = InternalMovie(
+            movie.getID(),
+            movie.getName(),
+            movie.getDescription(),
+            movie.getImage(),
+            HashMap(),
+            movie.getFavourite(),
+            movie.getWatchLater()
+        )
+
+        internal.updateWatchLater(internalMovie)
     }
 
     override fun getWatchLater(): List<Movie> {
-        TODO("Not yet implemented")
+        val result = ArrayList<Movie>()
+        val internalMovies = internal.getWatchLater()
+
+        for (internalMovie in internalMovies) {
+            result.add(internalMovie.toMovie())
+        }
+
+        return result
     }
 }
