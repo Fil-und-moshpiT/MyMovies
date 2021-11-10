@@ -16,8 +16,7 @@
             android:layout_height="120dp"
             android:layout_marginEnd="8dp"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_launcher_background">
-        </ImageView>
+            app:srcCompat="@drawable/ic_launcher_background" />
 
         <ImageView
             android:id="@+id/movie_watch_later"

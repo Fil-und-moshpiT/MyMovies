@@ -1,18 +1,14 @@
 package com.filundmoshpit.mymovies.data
 
 import com.filundmoshpit.mymovies.data.external.KinopoiskAPI
-import com.filundmoshpit.mymovies.data.external.SearchResponse
 import com.filundmoshpit.mymovies.data.internal.InternalMovie
 import com.filundmoshpit.mymovies.data.internal.MovieDAO
-import com.filundmoshpit.mymovies.domain.Movie
+import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.domain.MoviesRepository
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val internal: MovieDAO) : MoviesRepository {
-    override fun search(query: String) : List<Movie> {
-        val result = ArrayList<Movie>()
+    override fun search(query: String) : List<MovieEntity> {
+        val result = ArrayList<MovieEntity>()
 
         val response = external.search(query).execute()
 
@@ -43,7 +39,7 @@ class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val inter
         return result
     }
 
-    override fun updateFavourite(movie: Movie) {
+    override fun updateFavourite(movie: MovieEntity) {
         val internalMovie = InternalMovie(
             movie.getID(),
             movie.getName(),
@@ -57,8 +53,8 @@ class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val inter
         internal.updateFavourite(internalMovie)
     }
 
-    override fun getFavourites(): List<Movie> {
-        val result = ArrayList<Movie>()
+    override fun getFavourites(): List<MovieEntity> {
+        val result = ArrayList<MovieEntity>()
         val internalMovies = internal.getFavourites()
 
         for (internalMovie in internalMovies) {
@@ -68,7 +64,7 @@ class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val inter
         return result
     }
 
-    override fun updateWatchLater(movie: Movie) {
+    override fun updateWatchLater(movie: MovieEntity) {
         val internalMovie = InternalMovie(
             movie.getID(),
             movie.getName(),
@@ -82,8 +78,8 @@ class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val inter
         internal.updateWatchLater(internalMovie)
     }
 
-    override fun getWatchLater(): List<Movie> {
-        val result = ArrayList<Movie>()
+    override fun getWatchLater(): List<MovieEntity> {
+        val result = ArrayList<MovieEntity>()
         val internalMovies = internal.getWatchLater()
 
         for (internalMovie in internalMovies) {

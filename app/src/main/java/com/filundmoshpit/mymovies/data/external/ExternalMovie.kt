@@ -1,7 +1,6 @@
 package com.filundmoshpit.mymovies.data.external
 
-import com.filundmoshpit.mymovies.MainActivity
-import com.filundmoshpit.mymovies.domain.Movie
+import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -27,8 +26,8 @@ data class ExternalMovie(
     @JsonAdapter(GsonRatingDeserializer::class)
     val rating: HashMap<String, Int>
 ) {
-    fun toMovie(): Movie {
-        val movie = Movie(id, name, description ?: "", image, rating)
+    fun toMovie(): MovieEntity {
+        val movie = MovieEntity(id, name, description ?: "", image, rating)
 
         return movie
     }

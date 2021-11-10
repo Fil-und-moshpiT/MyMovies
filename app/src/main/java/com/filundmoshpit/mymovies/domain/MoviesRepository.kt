@@ -2,13 +2,13 @@ package com.filundmoshpit.mymovies.domain
 
 interface MoviesRepository {
 
-    fun search(query: String) : List<Movie>
+    fun search(query: String) : List<MovieEntity>
 
-    fun updateFavourite(movie: Movie)
+    fun updateFavourite(movie: MovieEntity)
 
-    fun getFavourites() : List<Movie>
+    fun getFavourites() : List<MovieEntity>
 
-    fun updateWatchLater(movie: Movie)
+    fun updateWatchLater(movie: MovieEntity)
 
-    fun getWatchLater() : List<Movie>
+    fun getWatchLater() : List<MovieEntity>
 }

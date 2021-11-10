@@ -2,17 +2,24 @@ package com.filundmoshpit.mymovies
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.room.Room
 import com.filundmoshpit.mymovies.data.MoviesRepositoryImpl
 import com.filundmoshpit.mymovies.data.external.KinopoiskAPI
 import com.filundmoshpit.mymovies.data.internal.MovieDAO
 import com.filundmoshpit.mymovies.data.internal.MoviesDatabase
-import com.filundmoshpit.mymovies.domain.FavouritesUseCase
-import com.filundmoshpit.mymovies.domain.MoviesRepository
-import com.filundmoshpit.mymovies.domain.SearchUseCase
-import com.filundmoshpit.mymovies.domain.WatchLaterUseCase
+import com.filundmoshpit.mymovies.domain.*
 import com.filundmoshpit.mymovies.presentation.favourites.FavouritesFragment
 import com.filundmoshpit.mymovies.presentation.search.SearchFragment
 import com.filundmoshpit.mymovies.presentation.watch_later.WatchLaterFragment
@@ -31,8 +38,10 @@ TODO:
     +Add "Favourites" fragment (Room)
     +Add bottom navigation menu
     +Check MVVM
-    Move all strings in resources
+    Add movie card fragment
+    +Move all strings in resources
     Add translation
+    +Add Jetpack Navigation
 */
 
 class MainActivity : AppCompatActivity() {
@@ -42,19 +51,20 @@ class MainActivity : AppCompatActivity() {
         private lateinit var databaseService: MovieDAO
         private lateinit var moviesRepository: MoviesRepository
 
+        lateinit var movieCardUseCase: MovieCardUseCase
         lateinit var searchUseCase: SearchUseCase
         lateinit var watchLaterUseCase: WatchLaterUseCase
         lateinit var favouritesUseCase: FavouritesUseCase
     }
 
     private lateinit var bottomNavigationView: BottomNavigationView
-    private val fragmentSearch     = SearchFragment()
-    private val fragmentWatchLater = WatchLaterFragment()
-    private val fragmentFavourite  = FavouritesFragment()
+    private lateinit var navigationController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
 
         //Data services configuration
         configureRetrofit()
@@ -62,39 +72,16 @@ class MainActivity : AppCompatActivity() {
 
         moviesRepository = MoviesRepositoryImpl(searchService, databaseService)
 
+        movieCardUseCase  = MovieCardUseCase(moviesRepository)
         searchUseCase     = SearchUseCase(moviesRepository)
         watchLaterUseCase = WatchLaterUseCase(moviesRepository)
         favouritesUseCase = FavouritesUseCase(moviesRepository)
 
-        //Set search fragment as default
-        openFragment(fragmentSearch)
+        //Navigation
+        bottomNavigationView = findViewById(R.id.bottom_navigation_view)
+        navigationController = (supportFragmentManager.findFragmentById(R.id.navigation_host_fragment) as NavHostFragment).navController
 
-        bottomNavigationView = findViewById(R.id.bottomNavigationView)
-        bottomNavigationView.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.navigation_bar_item_search -> {
-                    openFragment(fragmentSearch)
-                    return@setOnItemSelectedListener true
-                }
-                R.id.navigation_bar_item_watch_later -> {
-                    openFragment(fragmentWatchLater)
-                    return@setOnItemSelectedListener true
-                }
-                R.id.navigation_bar_item_favourites -> {
-                    openFragment(fragmentFavourite)
-                    return@setOnItemSelectedListener true
-                }
-                else -> {
-                    return@setOnItemSelectedListener false
-                }
-            }
-        }
-    }
-
-    private fun openFragment(fragment: Fragment) {
-        supportFragmentManager.commit {
-            replace(R.id.fragment_main, fragment)
-        }
+        NavigationUI.setupWithNavController(bottomNavigationView, navigationController)
     }
 
     private fun configureRetrofit() {

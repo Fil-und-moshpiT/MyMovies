@@ -1,20 +1,21 @@
 package com.filundmoshpit.mymovies.presentation.search
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.filundmoshpit.mymovies.R
-import com.filundmoshpit.mymovies.domain.Movie
+import com.filundmoshpit.mymovies.domain.MovieEntity
 
-class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<Movie, SearchListAdapter.MoviesViewHolder>(MovieDiffCallback) {
+class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<MovieEntity, SearchListAdapter.MoviesViewHolder>(MovieDiffCallback) {
 
     companion object {
         var count = 0
@@ -28,12 +29,12 @@ class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<Movie, Sea
         return MoviesViewHolder(view)
     }
 
-    override fun onCurrentListChanged(previousList: MutableList<Movie>, currentList: MutableList<Movie>) {
+    override fun onCurrentListChanged(previousList: MutableList<MovieEntity>, currentList: MutableList<MovieEntity>) {
         count = currentList.size
     }
 
     override fun getItemViewType(position: Int): Int {
-        return R.layout.movie_item
+        return R.layout.movie_list_item
     }
 
     override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
@@ -46,16 +47,22 @@ class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<Movie, Sea
 
     inner class MoviesViewHolder(private val item: View) : RecyclerView.ViewHolder(item) {
 
-        private var movie: Movie? = null
+        private var movie: MovieEntity? = null
 
         private val name: TextView = itemView.findViewById(R.id.movie_name)
         private val description: TextView = itemView.findViewById(R.id.movie_description)
         private val poster: ImageView = itemView.findViewById(R.id.movie_poster)
 
-        private val favourite: ImageView = itemView.findViewById(R.id.movie_favourite)
-        private val watchLater: ImageView = itemView.findViewById(R.id.movie_watch_later)
-
         init {
+            item.setOnClickListener {
+                Navigation.createNavigateOnClickListener(R.id.navigation_movie_card_fragment)
+            }
+        }
+
+        //private val favourite: ImageView = itemView.findViewById(R.id.movie_favourite)
+        //private val watchLater: ImageView = itemView.findViewById(R.id.movie_watch_later)
+
+        /*init {
             favourite.setOnClickListener {
                 if (movie != null) {
                     val currentMovie = movie!!
@@ -85,9 +92,9 @@ class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<Movie, Sea
                     //Toast.makeText(it.context, "Watch later: ${currentMovie.getName()}", Toast.LENGTH_SHORT).show()
                 }
             }
-        }
+        }*/
 
-        fun bind(movie: Movie) {
+        fun bind(movie: MovieEntity) {
             this.movie = movie
             this.name.text = movie.getName()
             this.description.text = movie.getDescription()
@@ -96,10 +103,10 @@ class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<Movie, Sea
                 .load(movie.getImage())
                 .into(poster)
 
-            setIcons()
+            //setIcons()
         }
 
-        private fun setIcons() {
+        /*private fun setIcons() {
             if (movie?.getFavourite() == true) {
                 favourite.setImageDrawable(AppCompatResources.getDrawable(item.context, R.drawable.ic_list_item_favourite_checked))
             }
@@ -113,15 +120,15 @@ class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<Movie, Sea
             else {
                 watchLater.setImageDrawable(AppCompatResources.getDrawable(item.context, R.drawable.ic_list_item_watch_later_unchecked))
             }
-        }
+        }*/
     }
 
-    object MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
-        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+    object MovieDiffCallback : DiffUtil.ItemCallback<MovieEntity>() {
+        override fun areItemsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+        override fun areContentsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
             return oldItem.getID() == newItem.getID()
                     && oldItem.getName() == newItem.getName()
                     && oldItem.getDescription() == newItem.getDescription()

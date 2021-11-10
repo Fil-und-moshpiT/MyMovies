@@ -2,11 +2,11 @@ package com.filundmoshpit.mymovies.domain
 
 class WatchLaterUseCase(private val repository: MoviesRepository) {
 
-    fun load() : List<Movie> {
+    fun load() : List<MovieEntity> {
         return repository.getWatchLater()
     }
 
-    fun updateFavourite(movie: Movie) {
+    fun updateFavourite(movie: MovieEntity) {
         repository.updateFavourite(movie)
     }
 }

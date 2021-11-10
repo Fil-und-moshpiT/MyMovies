@@ -1,7 +1,7 @@
 package com.filundmoshpit.mymovies.domain
 
 //Using in UI lists
-class Movie(
+class MovieEntity(
     private val id: Int,
     private val name: String,
     private val description: String,

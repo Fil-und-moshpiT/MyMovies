@@ -2,23 +2,26 @@ package com.filundmoshpit.mymovies.presentation.search
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.filundmoshpit.mymovies.domain.Movie
+import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.domain.SearchUseCase
 import com.filundmoshpit.mymovies.presentation.util.ListLoadingStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
 
-    val status = MutableLiveData(ListLoadingStatus.EMPTY)
+    //val status = MutableLiveData(ListLoadingStatus.EMPTY)
+    val status = MutableStateFlow(ListLoadingStatus.EMPTY)
 
     val query = MutableLiveData<String>()
 
-    val movies = MutableLiveData<ArrayList<Movie>>()
+    val movies = MutableLiveData<ArrayList<MovieEntity>>()
 
     private fun setStatus(value: ListLoadingStatus) {
-        status.postValue(value)
+        //status.postValue(value)
+        status.value = value
     }
 
     private fun getQuery(): String {
@@ -29,11 +32,11 @@ class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
         query.postValue(value)
     }
 
-    fun addMovie(movie: Movie) {
+    fun addMovie(movie: MovieEntity) {
         val currentData = movies.value
 
         if (currentData == null) {
-            val updatedData = ArrayList<Movie>()
+            val updatedData = ArrayList<MovieEntity>()
             updatedData.add(movie)
 
             movies.postValue(updatedData)
@@ -43,12 +46,12 @@ class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
                 add(movie)
             }
 
-            movies.postValue(updatedData as ArrayList<Movie>)
+            movies.postValue(updatedData as ArrayList<MovieEntity>)
         }
     }
 
-    private fun replaceMovies(list: List<Movie>) {
-        movies.postValue(list as ArrayList<Movie>)
+    private fun replaceMovies(list: List<MovieEntity>) {
+        movies.postValue(list as ArrayList<MovieEntity>)
     }
 
     private fun clearMovies() {
@@ -86,7 +89,7 @@ class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
                 }
             )*/
 
-            val founded = useCase.search(getQuery()) as ArrayList<Movie>
+            val founded = useCase.search(getQuery()) as ArrayList<MovieEntity>
 
             if (founded.isEmpty()) {
                 setStatus(ListLoadingStatus.EMPTY)
@@ -97,13 +100,13 @@ class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
         }
     }
 
-    fun updateFavourite(movie: Movie) {
+    fun updateFavourite(movie: MovieEntity) {
         GlobalScope.launch(Dispatchers.IO) {
             useCase.updateFavourite(movie)
         }
     }
 
-    fun updateWatchLater(movie: Movie) {
+    fun updateWatchLater(movie: MovieEntity) {
         GlobalScope.launch(Dispatchers.IO) {
             useCase.updateWatchLater(movie)
         }

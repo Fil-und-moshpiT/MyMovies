@@ -12,11 +12,13 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.filundmoshpit.mymovies.MainActivity
 import com.filundmoshpit.mymovies.R
-import com.filundmoshpit.mymovies.domain.Movie
+import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.presentation.util.ListLoadingStatus
+import kotlinx.coroutines.flow.collect
 
 class SearchFragment : Fragment() {
 
@@ -27,10 +29,6 @@ class SearchFragment : Fragment() {
     private lateinit var viewSearchList: RecyclerView
     private lateinit var viewSearchEmptyListLabel: TextView
     private lateinit var viewSearchLoadingSpinner: ProgressBar
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_search, container, false)
@@ -56,8 +54,10 @@ class SearchFragment : Fragment() {
         viewSearchLoadingSpinner = root.findViewById(R.id.pb_search_loading_spinner)
 
         //ViewModel observers
-        viewModel.movies.observe(viewLifecycleOwner, { moviesAdapter.submitList(it as MutableList<Movie>) })
-        viewModel.status.observe(viewLifecycleOwner, { onStatusChange(it) })
+        viewModel.movies.observe(viewLifecycleOwner, { moviesAdapter.submitList(it as MutableList<MovieEntity>) })
+        //viewModel.status.observe(viewLifecycleOwner, { onStatusChange(it) })
+
+        lifecycleScope.launchWhenStarted { viewModel.status.collect { onStatusChange(it) } }
 
         return root
     }

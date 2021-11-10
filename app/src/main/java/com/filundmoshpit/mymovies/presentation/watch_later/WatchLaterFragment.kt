@@ -1,21 +1,20 @@
 package com.filundmoshpit.mymovies.presentation.watch_later
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.filundmoshpit.mymovies.MainActivity
 import com.filundmoshpit.mymovies.R
-import com.filundmoshpit.mymovies.domain.Movie
-import com.filundmoshpit.mymovies.presentation.favourites.FavouritesListAdapter
-import com.filundmoshpit.mymovies.presentation.favourites.FavouritesViewModel
-import com.filundmoshpit.mymovies.presentation.favourites.FavouritesViewModelFactory
+import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.presentation.util.ListLoadingStatus
+import kotlinx.coroutines.flow.collect
 
 class WatchLaterFragment : Fragment() {
 
@@ -42,8 +41,10 @@ class WatchLaterFragment : Fragment() {
         viewWatchLaterLoadingSpinner = root.findViewById(R.id.pb_watch_later_loading_spinner)
 
         //ViewModel observers
-        viewModel.movies.observe(viewLifecycleOwner, { moviesAdapter.submitList(it as MutableList<Movie>) })
-        viewModel.status.observe(viewLifecycleOwner, { onStatusChange(it) })
+        viewModel.movies.observe(viewLifecycleOwner, { moviesAdapter.submitList(it as MutableList<MovieEntity>) })
+        //viewModel.status.observe(viewLifecycleOwner, { onStatusChange(it) })
+
+        lifecycleScope.launchWhenStarted { viewModel.status.collect { onStatusChange(it) } }
 
         viewModel.load()
 

@@ -1,10 +1,6 @@
 package com.filundmoshpit.mymovies.domain
 
-class SearchUseCase(private val repository: MoviesRepository) {
-    fun search(query: String) : List<MovieEntity> {
-        return repository.search(query)
-    }
-
+class MovieCardUseCase(private val repository: MoviesRepository) {
     fun updateFavourite(movie: MovieEntity) {
         repository.updateFavourite(movie)
     }

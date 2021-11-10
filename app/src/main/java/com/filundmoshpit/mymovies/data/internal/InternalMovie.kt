@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.filundmoshpit.mymovies.domain.Movie
+import com.filundmoshpit.mymovies.domain.MovieEntity
 
 @Entity
 @TypeConverters(InternalMovie.RoomRatingConverter::class)
@@ -33,8 +33,8 @@ data class InternalMovie(
                 false,
                 false)*/
 
-    fun toMovie(): Movie {
-        val result = Movie(id, name, description, image, rating)
+    fun toMovie(): MovieEntity {
+        val result = MovieEntity(id, name, description, image, rating)
         result.setFavourite(favourite)
         result.setWatchLater(watchLater)
 
