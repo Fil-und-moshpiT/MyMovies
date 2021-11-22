@@ -47,7 +47,9 @@ data class ExternalMovie(
                 val keys = asJsonObject.keySet()
 
                 for (key in keys) {
-                    result[key] = asJsonObject.get(key).asInt
+                    if (key.equals("kp") || key.equals("imdb")) {
+                        result[key] = asJsonObject.get(key).asInt
+                    }
                 }
             }
 

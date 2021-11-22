@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.domain.WatchLaterUseCase
-import com.filundmoshpit.mymovies.presentation.util.ListLoadingStatus
+import com.filundmoshpit.mymovies.presentation.util.LoadingStatuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,11 +13,11 @@ import kotlinx.coroutines.launch
 class WatchLaterViewModel(private val useCase: WatchLaterUseCase) : ViewModel() {
 
     //val status = MutableLiveData(ListLoadingStatus.EMPTY)
-    val status = MutableStateFlow(ListLoadingStatus.EMPTY)
+    val status = MutableStateFlow(LoadingStatuses.EMPTY)
 
     val movies = MutableLiveData<ArrayList<MovieEntity>>()
 
-    private fun setStatus(value: ListLoadingStatus) {
+    private fun setStatus(value: LoadingStatuses) {
         //status.postValue(value)
         status.value = value
     }
@@ -31,7 +31,7 @@ class WatchLaterViewModel(private val useCase: WatchLaterUseCase) : ViewModel() 
     }
 
     fun load() {
-        setStatus(ListLoadingStatus.LOADING)
+        setStatus(LoadingStatuses.LOADING)
         clearMovies()
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -39,10 +39,10 @@ class WatchLaterViewModel(private val useCase: WatchLaterUseCase) : ViewModel() 
 
             if (founded.isNotEmpty()) {
                 replaceMovies(founded)
-                setStatus(ListLoadingStatus.LOADED)
+                setStatus(LoadingStatuses.LOADED)
             }
             else {
-                setStatus(ListLoadingStatus.EMPTY)
+                setStatus(LoadingStatuses.EMPTY)
             }
         }
     }

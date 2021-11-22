@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.filundmoshpit.mymovies.MainActivity
 import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.presentation.util.ListLoadingStatus
+import com.filundmoshpit.mymovies.presentation.util.LoadingStatuses
 import kotlinx.coroutines.flow.collect
 
 class FavouritesFragment : Fragment() {
@@ -51,21 +51,21 @@ class FavouritesFragment : Fragment() {
         return root
     }
 
-    private fun onStatusChange(status: ListLoadingStatus) {
+    private fun onStatusChange(status: LoadingStatuses) {
         when (status) {
-            ListLoadingStatus.EMPTY -> {
+            LoadingStatuses.EMPTY -> {
                 viewFavouritesList.visibility = View.GONE
                 viewFavouritesEmptyListLabel.visibility = View.VISIBLE
                 viewFavouritesLoadingSpinner.visibility = View.GONE
             }
 
-            ListLoadingStatus.LOADED -> {
+            LoadingStatuses.LOADED -> {
                 viewFavouritesList.visibility = View.VISIBLE
                 viewFavouritesEmptyListLabel.visibility = View.GONE
                 viewFavouritesLoadingSpinner.visibility = View.GONE
             }
 
-            ListLoadingStatus.LOADING -> {
+            LoadingStatuses.LOADING -> {
                 viewFavouritesList.visibility = View.GONE
                 viewFavouritesEmptyListLabel.visibility = View.GONE
                 viewFavouritesLoadingSpinner.visibility = View.VISIBLE

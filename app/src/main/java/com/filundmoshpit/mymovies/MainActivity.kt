@@ -38,10 +38,13 @@ TODO:
     +Add "Favourites" fragment (Room)
     +Add bottom navigation menu
     +Check MVVM
-    Add movie card fragment
+    +Add movie card fragment
     +Move all strings in resources
     Add translation
     +Add Jetpack Navigation
+    +Add network to database caching while search
+    Add animations
+    Remove reloadings in watch later and favourites lists
 */
 
 class MainActivity : AppCompatActivity() {
@@ -64,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
+        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
 
         //Data services configuration
         configureRetrofit()

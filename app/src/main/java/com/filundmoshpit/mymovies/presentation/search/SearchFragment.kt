@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.filundmoshpit.mymovies.MainActivity
 import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.presentation.util.ListLoadingStatus
+import com.filundmoshpit.mymovies.presentation.util.LoadingStatuses
 import kotlinx.coroutines.flow.collect
 
 class SearchFragment : Fragment() {
@@ -33,7 +33,6 @@ class SearchFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_search, container, false)
 
-        //searchViewModel = ViewModelProvider(requireActivity()).get(SearchViewModel::class.java)
         viewModel =
             ViewModelProvider(requireActivity(), SearchViewModelFactory(MainActivity.searchUseCase))
                 .get(SearchViewModel::class.java)
@@ -62,21 +61,21 @@ class SearchFragment : Fragment() {
         return root
     }
 
-    private fun onStatusChange(status: ListLoadingStatus) {
+    private fun onStatusChange(status: LoadingStatuses) {
         when (status) {
-            ListLoadingStatus.EMPTY -> {
+            LoadingStatuses.EMPTY -> {
                 viewSearchList.visibility = View.GONE
                 viewSearchEmptyListLabel.visibility = View.VISIBLE
                 viewSearchLoadingSpinner.visibility = View.GONE
             }
 
-            ListLoadingStatus.LOADED -> {
+            LoadingStatuses.LOADED -> {
                 viewSearchList.visibility = View.VISIBLE
                 viewSearchEmptyListLabel.visibility = View.GONE
                 viewSearchLoadingSpinner.visibility = View.GONE
             }
 
-            ListLoadingStatus.LOADING -> {
+            LoadingStatuses.LOADING -> {
                 viewSearchList.visibility = View.GONE
                 viewSearchEmptyListLabel.visibility = View.GONE
                 viewSearchLoadingSpinner.visibility = View.VISIBLE

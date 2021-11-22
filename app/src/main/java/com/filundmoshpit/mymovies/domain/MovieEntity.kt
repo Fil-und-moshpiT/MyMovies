@@ -1,5 +1,8 @@
 package com.filundmoshpit.mymovies.domain
 
+import android.os.Parcel
+import android.os.Parcelable
+
 //Using in UI lists
 class MovieEntity(
     private val id: Int,

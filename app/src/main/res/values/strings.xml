@@ -7,4 +7,5 @@
     <string name="search_empty_list_label">Nothing was found</string>
     <string name="favourites_empty_list_label">There is no favourite movies</string>
     <string name="watch_later_empty_list_label">There is no movies to watch later</string>
+    <string name="long_text_example">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
 </resources>

@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -45,82 +45,35 @@ class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<MovieEntit
         return count
     }
 
-    inner class MoviesViewHolder(private val item: View) : RecyclerView.ViewHolder(item) {
-
-        private var movie: MovieEntity? = null
+    inner class MoviesViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
         private val name: TextView = itemView.findViewById(R.id.movie_name)
         private val description: TextView = itemView.findViewById(R.id.movie_description)
         private val poster: ImageView = itemView.findViewById(R.id.movie_poster)
 
+        private var movie: MovieEntity? = null
+
         init {
-            item.setOnClickListener {
-                Navigation.createNavigateOnClickListener(R.id.navigation_movie_card_fragment)
+            itemView.setOnClickListener {
+                if (movie != null) {
+                    val bundle = Bundle().apply {
+                        putInt("id", movie!!.getID())
+                    }
+
+                    itemView.findNavController().navigate(R.id.navigation_movie_card_fragment, bundle)
+                }
             }
         }
-
-        //private val favourite: ImageView = itemView.findViewById(R.id.movie_favourite)
-        //private val watchLater: ImageView = itemView.findViewById(R.id.movie_watch_later)
-
-        /*init {
-            favourite.setOnClickListener {
-                if (movie != null) {
-                    val currentMovie = movie!!
-
-                    //currentMovie.setFavourite(true)
-                    currentMovie.changeFavourite()
-
-                    viewModel.updateFavourite(currentMovie)
-
-                    setIcons()
-
-                    //Toast.makeText(it.context, "Favourite: ${currentMovie.getName()}", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            watchLater.setOnClickListener {
-                if (movie != null) {
-                    val currentMovie = movie!!
-
-                    //currentMovie.setWatchLater(true)
-                    currentMovie.changeWatchLater()
-
-                    viewModel.updateWatchLater(currentMovie)
-
-                    setIcons()
-
-                    //Toast.makeText(it.context, "Watch later: ${currentMovie.getName()}", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }*/
 
         fun bind(movie: MovieEntity) {
             this.movie = movie
             this.name.text = movie.getName()
             this.description.text = movie.getDescription()
 
-            Glide.with(item)
+            Glide.with(itemView)
                 .load(movie.getImage())
                 .into(poster)
-
-            //setIcons()
         }
-
-        /*private fun setIcons() {
-            if (movie?.getFavourite() == true) {
-                favourite.setImageDrawable(AppCompatResources.getDrawable(item.context, R.drawable.ic_list_item_favourite_checked))
-            }
-            else {
-                favourite.setImageDrawable(AppCompatResources.getDrawable(item.context, R.drawable.ic_list_item_favourite_unchecked))
-            }
-
-            if (movie?.getWatchLater() == true) {
-                watchLater.setImageDrawable(AppCompatResources.getDrawable(item.context, R.drawable.ic_list_item_watch_later_checked))
-            }
-            else {
-                watchLater.setImageDrawable(AppCompatResources.getDrawable(item.context, R.drawable.ic_list_item_watch_later_unchecked))
-            }
-        }*/
     }
 
     object MovieDiffCallback : DiffUtil.ItemCallback<MovieEntity>() {

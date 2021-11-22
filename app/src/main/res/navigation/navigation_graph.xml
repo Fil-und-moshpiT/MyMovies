@@ -10,30 +10,26 @@
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
         <action
-            android:id="@+id/action_navigation_bar_item_search_to_movieCardFragment"
+            android:id="@+id/action_navigation_bar_item_search_to_navigation_movie_card_fragment"
             app:destination="@id/navigation_movie_card_fragment" />
     </fragment>
     <fragment
         android:id="@+id/navigation_bar_item_watch_later"
         android:name="com.filundmoshpit.mymovies.presentation.watch_later.WatchLaterFragment"
         android:label="fragment_watch_later"
-        tools:layout="@layout/fragment_watch_later" >
-        <action
-            android:id="@+id/action_navigation_bar_item_watch_later_to_movieCardFragment"
-            app:destination="@id/navigation_movie_card_fragment" />
-    </fragment>
+        tools:layout="@layout/fragment_watch_later" />
     <fragment
         android:id="@+id/navigation_bar_item_favourites"
         android:name="com.filundmoshpit.mymovies.presentation.favourites.FavouritesFragment"
         android:label="fragment_favourites"
-        tools:layout="@layout/fragment_favourites" >
-        <action
-            android:id="@+id/action_navigation_bar_item_favourites_to_movieCardFragment"
-            app:destination="@id/navigation_movie_card_fragment" />
-    </fragment>
+        tools:layout="@layout/fragment_favourites" />
     <fragment
         android:id="@+id/navigation_movie_card_fragment"
         android:name="com.filundmoshpit.mymovies.presentation.movie_card.MovieCardFragment"
         android:label="fragment_movie_card"
-        tools:layout="@layout/fragment_movie_card" />
+        tools:layout="@layout/fragment_movie_card" >
+        <argument
+            android:name="id"
+            app:argType="integer" />
+    </fragment>
 </navigation>

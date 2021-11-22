@@ -53,12 +53,12 @@ class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val inter
         internal.updateFavourite(internalMovie)
     }
 
-    override fun getFavourites(): List<MovieEntity> {
+    override fun getFavourite(): List<MovieEntity> {
         val result = ArrayList<MovieEntity>()
         val internalMovies = internal.getFavourites()
 
         for (internalMovie in internalMovies) {
-            result.add(internalMovie.toMovie())
+            result.add(internalMovie.toMovieEntity())
         }
 
         return result
@@ -83,9 +83,19 @@ class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val inter
         val internalMovies = internal.getWatchLater()
 
         for (internalMovie in internalMovies) {
-            result.add(internalMovie.toMovie())
+            result.add(internalMovie.toMovieEntity())
         }
 
         return result
+    }
+
+    override fun getMovieByID(id: Int): MovieEntity {
+        val found = internal.getById(id)
+
+        if (found.isNotEmpty()) {
+            return found[0].toMovieEntity()
+        }
+
+        return MovieEntity(0, "Unknown", "Unknown", "", HashMap())
     }
 }

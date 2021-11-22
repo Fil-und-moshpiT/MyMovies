@@ -6,9 +6,11 @@ interface MoviesRepository {
 
     fun updateFavourite(movie: MovieEntity)
 
-    fun getFavourites() : List<MovieEntity>
+    fun getFavourite() : List<MovieEntity>
 
     fun updateWatchLater(movie: MovieEntity)
 
     fun getWatchLater() : List<MovieEntity>
+
+    fun getMovieByID(id: Int): MovieEntity
 }

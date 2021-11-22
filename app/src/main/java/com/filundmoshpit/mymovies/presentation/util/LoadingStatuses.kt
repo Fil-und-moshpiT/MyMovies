@@ -1,6 +1,6 @@
 package com.filundmoshpit.mymovies.presentation.util
 
-enum class ListLoadingStatus {
+enum class LoadingStatuses {
     EMPTY,
     LOADED,
     LOADING

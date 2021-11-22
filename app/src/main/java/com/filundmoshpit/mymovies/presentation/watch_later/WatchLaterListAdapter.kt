@@ -1,11 +1,13 @@
 package com.filundmoshpit.mymovies.presentation.watch_later
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -43,30 +45,22 @@ class WatchLaterListAdapter(val viewModel: WatchLaterViewModel) : ListAdapter<Mo
         return count
     }
 
-    inner class MoviesViewHolder(private val item: View) : RecyclerView.ViewHolder(item) {
+    inner class MoviesViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
         private var name: TextView = itemView.findViewById(R.id.movie_name)
         private var description: TextView = itemView.findViewById(R.id.movie_description)
         private var poster: ImageView = itemView.findViewById(R.id.movie_poster)
 
-        private val favourite: ImageView = itemView.findViewById(R.id.movie_favourite)
-        private val watchLater: ImageView = itemView.findViewById(R.id.movie_watch_later)
-
         private var movie: MovieEntity? = null
 
         init {
-            favourite.setOnClickListener {
+            itemView.setOnClickListener {
                 if (movie != null) {
-                    val currentMovie = movie!!
+                    val bundle = Bundle().apply {
+                        putInt("id", movie!!.getID())
+                    }
 
-                    //currentMovie.setFavourite(true)
-                    currentMovie.changeFavourite()
-
-                    viewModel.updateFavourite(currentMovie)
-
-                    setIcons()
-
-                    //Toast.makeText(it.context, "Favourite: ${currentMovie.getName()}", Toast.LENGTH_SHORT).show()
+                    itemView.findNavController().navigate(R.id.navigation_movie_card_fragment, bundle)
                 }
             }
         }
@@ -76,23 +70,9 @@ class WatchLaterListAdapter(val viewModel: WatchLaterViewModel) : ListAdapter<Mo
             this.name.text = movie.getName()
             this.description.text = movie.getDescription()
 
-            Glide.with(item)
+            Glide.with(itemView)
                 .load(movie.getImage())
                 .into(poster)
-
-            setIcons()
-        }
-
-        private fun setIcons() {
-            //Watch later icon are always invisible on this ViewHolder
-            watchLater.visibility = View.INVISIBLE
-
-            if (movie?.getFavourite() == true) {
-                favourite.setImageDrawable(AppCompatResources.getDrawable(item.context, R.drawable.ic_list_item_favourite_checked))
-            }
-            else {
-                favourite.setImageDrawable(AppCompatResources.getDrawable(item.context, R.drawable.ic_list_item_favourite_unchecked))
-            }
         }
     }
 

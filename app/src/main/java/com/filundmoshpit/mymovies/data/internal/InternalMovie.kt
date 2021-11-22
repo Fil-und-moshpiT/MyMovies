@@ -33,7 +33,7 @@ data class InternalMovie(
                 false,
                 false)*/
 
-    fun toMovie(): MovieEntity {
+    fun toMovieEntity(): MovieEntity {
         val result = MovieEntity(id, name, description, image, rating)
         result.setFavourite(favourite)
         result.setWatchLater(watchLater)

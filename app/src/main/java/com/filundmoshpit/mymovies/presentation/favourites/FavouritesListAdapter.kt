@@ -1,10 +1,12 @@
 package com.filundmoshpit.mymovies.presentation.favourites
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -42,33 +44,34 @@ class FavouritesListAdapter : ListAdapter<MovieEntity, FavouritesListAdapter.Mov
         return count
     }
 
-    inner class MoviesViewHolder(private val item: View) : RecyclerView.ViewHolder(item) {
+    inner class MoviesViewHolder(item: View) : RecyclerView.ViewHolder(item) {
 
         private var name: TextView = itemView.findViewById(R.id.movie_name)
         private var description: TextView = itemView.findViewById(R.id.movie_description)
         private var poster: ImageView = itemView.findViewById(R.id.movie_poster)
 
-        private val favourite: ImageView = itemView.findViewById(R.id.movie_favourite)
-        private val watchLater: ImageView = itemView.findViewById(R.id.movie_watch_later)
-
         private var movie: MovieEntity? = null
+
+        init {
+            itemView.setOnClickListener {
+                if (movie != null) {
+                    val bundle = Bundle().apply {
+                        putInt("id", movie!!.getID())
+                    }
+
+                    itemView.findNavController().navigate(R.id.navigation_movie_card_fragment, bundle)
+                }
+            }
+        }
 
         fun bind(movie: MovieEntity) {
             this.movie = movie
             this.name.text = movie.getName()
             this.description.text = movie.getDescription()
 
-            Glide.with(item)
+            Glide.with(itemView)
                 .load(movie.getImage())
                 .into(poster)
-
-            setIcons()
-        }
-
-        private fun setIcons() {
-            //Icons are always invisible on this ViewHolder
-            favourite.visibility = View.INVISIBLE
-            watchLater.visibility = View.INVISIBLE
         }
     }
 
