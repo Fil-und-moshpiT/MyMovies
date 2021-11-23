@@ -41,9 +41,7 @@ class FavouritesFragment : Fragment() {
         viewFavouritesLoadingSpinner = root.findViewById(R.id.pb_favourites_loading_spinner)
 
         //ViewModel observers
-        viewModel.movies.observe(viewLifecycleOwner, { moviesAdapter.submitList(it as MutableList<MovieEntity>) })
-        //viewModel.status.observe(viewLifecycleOwner, { onStatusChange(it) })
-
+        lifecycleScope.launchWhenStarted { viewModel.movies.collect { moviesAdapter.submitList(it as MutableList<MovieEntity>) } }
         lifecycleScope.launchWhenStarted { viewModel.status.collect { onStatusChange(it) } }
 
         viewModel.load()

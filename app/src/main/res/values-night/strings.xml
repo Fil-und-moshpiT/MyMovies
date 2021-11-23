@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--General-->
     <string name="app_name">MyMovies</string>
-    <string name="search_label">Search</string>
-    <string name="favourite">Favourites</string>
-    <string name="watch">Watch</string>
-    <string name="search_empty_list_label">Nothing was found</string>
-    <string name="favourites_empty_list_label">There is no favourite movies</string>
-    <string name="watch_later_empty_list_label">There is no movies to watch later</string>
+
+    <!--Bottom navigation menu-->
+    <string name="navigation_menu_search_label">Search</string>
+    <string name="navigation_menu_favourites">Favourites</string>
+    <string name="navigation_menu_watch_later">To Watch</string>
+
+    <!--Search fragment-->
+    <string name="search_error_empty_list">Nothing was found</string>
+    <string name="search_error_network">Network error</string>
+
+    <!--Favourites fragment-->
+    <string name="favourites_error_empty_list">There is no favourite movies</string>
+
+    <!--Watch later fragment-->
+    <string name="watch_later_error_empty_list">There is no movies to watch later</string>
 </resources>

@@ -1,7 +1,9 @@
 package com.filundmoshpit.mymovies.presentation.search
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.filundmoshpit.mymovies.R
+import com.filundmoshpit.mymovies.data.utils.ExternalError
+import com.filundmoshpit.mymovies.data.utils.ExternalSuccess
 import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.domain.SearchUseCase
 import com.filundmoshpit.mymovies.presentation.util.LoadingStatuses
@@ -12,50 +14,40 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
 
-    //val status = MutableLiveData(ListLoadingStatus.EMPTY)
     val status = MutableStateFlow(LoadingStatuses.EMPTY)
 
-    val query = MutableLiveData<String>()
+    val errorTextId = MutableStateFlow(ERROR_STRING_ID_EMPTY)
 
-    val movies = MutableLiveData<ArrayList<MovieEntity>>()
+    private val query = MutableStateFlow("")
+
+    val movies = MutableStateFlow(ArrayList<MovieEntity>())
 
     private fun setStatus(value: LoadingStatuses) {
-        //status.postValue(value)
         status.value = value
     }
 
-    private fun getQuery(): String {
-        return query.value ?: ""
+    private fun setError(value: Int) {
+        errorTextId.value = value
+    }
+
+    fun getQuery(): String {
+        return query.value
     }
 
     fun setQuery(value: String) {
-        query.postValue(value)
+        query.value = value
     }
 
-    fun addMovie(movie: MovieEntity) {
-        val currentData = movies.value
-
-        if (currentData == null) {
-            val updatedData = ArrayList<MovieEntity>()
-            updatedData.add(movie)
-
-            movies.postValue(updatedData)
-        }
-        else {
-            val updatedData = currentData.toMutableList().apply {
-                add(movie)
-            }
-
-            movies.postValue(updatedData as ArrayList<MovieEntity>)
-        }
-    }
+    /*fun addMovie(movie: MovieEntity) {
+        movies.value = movies.value.toMutableList().apply { add(movie) } as ArrayList<MovieEntity>
+    }*/
 
     private fun replaceMovies(list: List<MovieEntity>) {
-        movies.postValue(list as ArrayList<MovieEntity>)
+        movies.value = list as ArrayList<MovieEntity>
     }
 
     private fun clearMovies() {
-        movies.postValue(ArrayList())
+        movies.value.clear()
     }
 
     fun search() {
@@ -63,26 +55,29 @@ class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
         clearMovies()
 
         GlobalScope.launch(Dispatchers.IO) {
-            val founded = useCase.search(getQuery()) as ArrayList<MovieEntity>
+            when (val response = useCase.search(getQuery())) {
+                is ExternalSuccess -> {
+                    val loaded = response.getMovies()
 
-            if (founded.isEmpty()) {
-                setStatus(LoadingStatuses.EMPTY)
-            } else {
-                replaceMovies(founded)
-                setStatus(LoadingStatuses.LOADED)
+                    if (loaded.isNotEmpty()) {
+                        replaceMovies(loaded)
+                        setStatus(LoadingStatuses.LOADED)
+                    }
+                    else {
+                        setError(ERROR_STRING_ID_EMPTY)
+                        setStatus(LoadingStatuses.EMPTY)
+                    }
+                }
+                is ExternalError -> {
+                    setError(ERROR_STRING_ID_NETWORK)
+                    setStatus(LoadingStatuses.EMPTY)
+                }
             }
         }
     }
 
-    fun updateFavourite(movie: MovieEntity) {
-        GlobalScope.launch(Dispatchers.IO) {
-            useCase.updateFavourite(movie)
-        }
-    }
-
-    fun updateWatchLater(movie: MovieEntity) {
-        GlobalScope.launch(Dispatchers.IO) {
-            useCase.updateWatchLater(movie)
-        }
+    companion object {
+        const val ERROR_STRING_ID_EMPTY = R.string.search_error_empty_list
+        const val ERROR_STRING_ID_NETWORK = R.string.search_error_network
     }
 }

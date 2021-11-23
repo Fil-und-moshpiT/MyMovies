@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--General-->
     <string name="app_name">MyMovies</string>
-    <string name="search_label">Search</string>
-    <string name="favourite">Favourites</string>
-    <string name="watch">Watch</string>
-    <string name="search_empty_list_label">Nothing was found</string>
-    <string name="favourites_empty_list_label">There is no favourite movies</string>
-    <string name="watch_later_empty_list_label">There is no movies to watch later</string>
     <string name="long_text_example">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+
+    <!--Bottom navigation menu-->
+    <string name="navigation_menu_search_label">Search</string>
+    <string name="navigation_menu_favourites">Favourites</string>
+    <string name="navigation_menu_watch_later">To watch</string>
+
+    <!--Search fragment-->
+    <string name="search_search_button">Search</string>
+    <string name="search_error_empty_list">Nothing was found</string>
+    <string name="search_error_network">Network error</string>
+
+    <!--Watch later fragment-->
+    <string name="watch_later_error_empty_list">There is no movies to watch later</string>
+
+    <!--Favourites fragment-->
+    <string name="favourites_error_empty_list">There is no favourite movies</string>
+
+    <!--Movie card fragment-->
+    <string name="movie_card_watch_later_button">Watch Later</string>
+    <string name="movie_card_favourite_button">Favourite</string>
+
 </resources>

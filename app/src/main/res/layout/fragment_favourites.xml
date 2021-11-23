@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/favourites_empty_list_label"
+        android:text="@string/favourites_error_empty_list"
         android:textAlignment="center"
         android:textSize="20sp" />
 

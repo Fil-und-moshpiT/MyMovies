@@ -1,42 +1,58 @@
-package com.filundmoshpit.mymovies.data
+package com.filundmoshpit.mymovies.data.utils
 
 import com.filundmoshpit.mymovies.data.external.KinopoiskAPI
 import com.filundmoshpit.mymovies.data.internal.InternalMovie
 import com.filundmoshpit.mymovies.data.internal.MovieDAO
 import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.domain.MoviesRepository
+import java.lang.Exception
+import java.net.UnknownHostException
 
 class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val internal: MovieDAO) : MoviesRepository {
-    override fun search(query: String) : List<MovieEntity> {
-        val result = ArrayList<MovieEntity>()
+    override fun search(query: String) : ExternalResponse {
+        try {
+            val response = external.search(query).execute()
 
-        val response = external.search(query).execute()
+            if (response.isSuccessful) {
+                val searchResponse = response.body()?.docs
 
-        if (response.isSuccessful) {
-            val searchResponse = response.body()?.docs
+                if (searchResponse == null) {
+                    return ExternalError("Unknown response")
+                }
+                else {
+                    val movies = ArrayList<MovieEntity>()
 
-            if (searchResponse != null) {
-                for (externalMovie in searchResponse) {
-                    result.add(externalMovie.toMovie())
+                    for (externalMovie in searchResponse) {
+                        val movie = externalMovie.toMovie()
+
+                        var favourite = false
+                        var watchlater = false
+
+                        val found = internal.getById(movie.getID())
+                        if (found.isNotEmpty()) {
+                            favourite = found[0].favourite
+                            watchlater = found[0].watchLater
+                        }
+
+                        movie.setFavourite(favourite)
+                        movie.setWatchLater(watchlater)
+
+                        movies.add(movie)
+                    }
+
+                    return ExternalSuccess(movies)
                 }
             }
-        }
-
-        for (movie in result) {
-            var favourite = false
-            var watchlater = false
-
-            val found = internal.getById(movie.getID())
-            if (found.isNotEmpty()) {
-                favourite = found[0].favourite
-                watchlater = found[0].watchLater
+            else {
+                return ExternalError(response.message())
             }
-
-            movie.setFavourite(favourite)
-            movie.setWatchLater(watchlater)
         }
-
-        return result
+        catch (e: UnknownHostException) {
+            return ExternalError("Connection error")
+        }
+        catch (e: Exception) {
+            return ExternalError(e.toString())
+        }
     }
 
     override fun updateFavourite(movie: MovieEntity) {

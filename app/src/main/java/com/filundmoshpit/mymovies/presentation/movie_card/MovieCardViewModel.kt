@@ -23,9 +23,7 @@ class MovieCardViewModel(private val useCase: MovieCardUseCase) : ViewModel() {
         setStatus(LoadingStatuses.LOADING)
 
         GlobalScope.launch(Dispatchers.IO) {
-            val loaded = useCase.getMovieByID(id)
-
-            movie.emit(loaded)
+            movie.emit(useCase.getMovieByID(id))
 
             setStatus(LoadingStatuses.LOADED)
         }

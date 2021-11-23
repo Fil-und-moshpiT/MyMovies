@@ -1,6 +1,5 @@
 package com.filundmoshpit.mymovies.presentation.favourites
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.filundmoshpit.mymovies.domain.FavouritesUseCase
 import com.filundmoshpit.mymovies.domain.MovieEntity
@@ -12,22 +11,20 @@ import kotlinx.coroutines.launch
 
 class FavouritesViewModel(private val useCase: FavouritesUseCase) : ViewModel() {
 
-    //val status = MutableLiveData(ListLoadingStatus.EMPTY)
     val status = MutableStateFlow(LoadingStatuses.EMPTY)
 
-    val movies = MutableLiveData<ArrayList<MovieEntity>>()
+    val movies = MutableStateFlow(ArrayList<MovieEntity>())
 
     private fun setStatus(value: LoadingStatuses) {
-        //status.postValue(value)
         status.value = value
     }
 
     private fun replaceMovies(list: List<MovieEntity>) {
-        movies.postValue(list as ArrayList<MovieEntity>)
+        movies.value = list as ArrayList<MovieEntity>
     }
 
     private fun clearMovies() {
-        movies.postValue(ArrayList())
+        movies.value.clear()
     }
 
     fun load() {

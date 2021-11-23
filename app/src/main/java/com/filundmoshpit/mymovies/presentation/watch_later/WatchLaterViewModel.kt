@@ -1,6 +1,5 @@
 package com.filundmoshpit.mymovies.presentation.watch_later
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.domain.WatchLaterUseCase
@@ -12,22 +11,20 @@ import kotlinx.coroutines.launch
 
 class WatchLaterViewModel(private val useCase: WatchLaterUseCase) : ViewModel() {
 
-    //val status = MutableLiveData(ListLoadingStatus.EMPTY)
     val status = MutableStateFlow(LoadingStatuses.EMPTY)
 
-    val movies = MutableLiveData<ArrayList<MovieEntity>>()
+    val movies = MutableStateFlow(ArrayList<MovieEntity>())
 
     private fun setStatus(value: LoadingStatuses) {
-        //status.postValue(value)
         status.value = value
     }
 
     private fun replaceMovies(list: List<MovieEntity>) {
-        movies.postValue(list as ArrayList<MovieEntity>)
+        movies.value = list as ArrayList<MovieEntity>
     }
 
     private fun clearMovies() {
-        movies.postValue(ArrayList())
+        movies.value.clear()
     }
 
     fun load() {
@@ -44,12 +41,6 @@ class WatchLaterViewModel(private val useCase: WatchLaterUseCase) : ViewModel() 
             else {
                 setStatus(LoadingStatuses.EMPTY)
             }
-        }
-    }
-
-    fun updateFavourite(movie: MovieEntity) {
-        GlobalScope.launch(Dispatchers.IO) {
-            useCase.updateFavourite(movie)
         }
     }
 }

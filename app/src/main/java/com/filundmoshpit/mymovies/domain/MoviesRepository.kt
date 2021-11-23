@@ -1,8 +1,10 @@
 package com.filundmoshpit.mymovies.domain
 
+import com.filundmoshpit.mymovies.data.utils.ExternalResponse
+
 interface MoviesRepository {
 
-    fun search(query: String) : List<MovieEntity>
+    fun search(query: String) : ExternalResponse
 
     fun updateFavourite(movie: MovieEntity)
 

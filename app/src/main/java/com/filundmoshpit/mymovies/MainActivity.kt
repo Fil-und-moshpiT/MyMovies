@@ -4,25 +4,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import androidx.room.Room
-import com.filundmoshpit.mymovies.data.MoviesRepositoryImpl
+import com.filundmoshpit.mymovies.data.utils.MoviesRepositoryImpl
 import com.filundmoshpit.mymovies.data.external.KinopoiskAPI
 import com.filundmoshpit.mymovies.data.internal.MovieDAO
 import com.filundmoshpit.mymovies.data.internal.MoviesDatabase
 import com.filundmoshpit.mymovies.domain.*
-import com.filundmoshpit.mymovies.presentation.favourites.FavouritesFragment
-import com.filundmoshpit.mymovies.presentation.search.SearchFragment
-import com.filundmoshpit.mymovies.presentation.watch_later.WatchLaterFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -43,8 +33,12 @@ TODO:
     Add translation
     +Add Jetpack Navigation
     +Add network to database caching while search
+    Add ViewBinding
     Add animations
     Remove reloadings in watch later and favourites lists
+    Show/hide bottom navigation bar
+    Add stars rating
+    !!!BUG: some items in list didn't cache
 */
 
 class MainActivity : AppCompatActivity() {

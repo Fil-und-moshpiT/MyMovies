@@ -59,7 +59,7 @@ class FavouritesListAdapter : ListAdapter<MovieEntity, FavouritesListAdapter.Mov
                         putInt("id", movie!!.getID())
                     }
 
-                    itemView.findNavController().navigate(R.id.navigation_movie_card_fragment, bundle)
+                    itemView.findNavController().navigate(R.id.action_nav_bottom_fragments_nav_movie_card_fragment, bundle)
                 }
             }
         }

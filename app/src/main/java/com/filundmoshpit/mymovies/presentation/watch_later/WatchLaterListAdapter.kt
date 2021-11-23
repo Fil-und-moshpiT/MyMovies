@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -60,7 +59,7 @@ class WatchLaterListAdapter(val viewModel: WatchLaterViewModel) : ListAdapter<Mo
                         putInt("id", movie!!.getID())
                     }
 
-                    itemView.findNavController().navigate(R.id.navigation_movie_card_fragment, bundle)
+                    itemView.findNavController().navigate(R.id.action_nav_bottom_fragments_nav_movie_card_fragment, bundle)
                 }
             }
         }

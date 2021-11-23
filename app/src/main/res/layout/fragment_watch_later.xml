@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/watch_later_empty_list_label"
+        android:text="@string/watch_later_error_empty_list"
         android:textAlignment="center"
         android:textSize="20sp" />
 
