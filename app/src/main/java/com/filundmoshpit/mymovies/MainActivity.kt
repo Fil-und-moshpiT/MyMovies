@@ -9,11 +9,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.room.Room
 import com.filundmoshpit.mymovies.data.utils.MoviesRepositoryImpl
-import com.filundmoshpit.mymovies.data.external.KinopoiskAPI
+import com.filundmoshpit.mymovies.data.external.tmdb.TMDBApi
 import com.filundmoshpit.mymovies.data.internal.MovieDAO
 import com.filundmoshpit.mymovies.data.internal.MoviesDatabase
 import com.filundmoshpit.mymovies.domain.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -33,18 +34,21 @@ TODO:
     Add translation
     +Add Jetpack Navigation
     +Add network to database caching while search
-    Add ViewBinding
+    +Add ViewBinding
     Add animations
     Remove reloadings in watch later and favourites lists
     Show/hide bottom navigation bar
     Add stars rating
-    !!!BUG: some items in list didn't cache
+    +Add TMDB
+    ?ADD OMDB
+    Add constructors to internal/external movies
+    +Remove Kinopoisk API
 */
 
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        private lateinit var searchService: KinopoiskAPI
+        private lateinit var tmdbService: TMDBApi
         private lateinit var databaseService: MovieDAO
         private lateinit var moviesRepository: MoviesRepository
 
@@ -64,10 +68,11 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
 
         //Data services configuration
-        configureRetrofit()
-        configureRoom()
+        configureTMDBApi()
 
-        moviesRepository = MoviesRepositoryImpl(searchService, databaseService)
+        configureInternalDB()
+
+        moviesRepository = MoviesRepositoryImpl(tmdbService, databaseService)
 
         movieCardUseCase  = MovieCardUseCase(moviesRepository)
         searchUseCase     = SearchUseCase(moviesRepository)
@@ -75,19 +80,19 @@ class MainActivity : AppCompatActivity() {
         favouritesUseCase = FavouritesUseCase(moviesRepository)
 
         //Navigation
-        bottomNavigationView = findViewById(R.id.bottom_navigation_view)
+        bottomNavigationView = findViewById(R.id.bottom_navigation_menu)
         navigationController = (supportFragmentManager.findFragmentById(R.id.navigation_host_fragment) as NavHostFragment).navController
 
         NavigationUI.setupWithNavController(bottomNavigationView, navigationController)
     }
 
-    private fun configureRetrofit() {
+    private fun configureTMDBApi() {
         val queryInterceptor = Interceptor {
             val url = it.request().url.newBuilder()
-                .addQueryParameter("field", "name")
-                //.addQueryParameter("limit", "2")
-                .addQueryParameter("isStrict", "false")
-                .addQueryParameter("token", BuildConfig.KINOPOISK_API_KEY).build()
+                //TODO: Add change during translation
+                .addQueryParameter("language", "ru")
+                .addQueryParameter("api_key", BuildConfig.TMDB_API_KEY)
+                .build()
 
             val request = it.request().newBuilder()
                 .url(url)
@@ -104,16 +109,19 @@ class MainActivity : AppCompatActivity() {
             .addInterceptor(queryInterceptor)
             .build()
 
+        val gson = GsonBuilder().serializeNulls().create()
+
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://api.kinopoisk.dev/")
+            .baseUrl("https://api.themoviedb.org/3/")
             .client(httpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            //.addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
 
-        searchService = retrofit.create(KinopoiskAPI::class.java)
+        tmdbService = retrofit.create(TMDBApi::class.java)
     }
 
-    private fun configureRoom() {
+    private fun configureInternalDB() {
         val moviesDatabase = Room.databaseBuilder(applicationContext, MoviesDatabase::class.java, "movies-database").build()
 
         databaseService = moviesDatabase.movieDAO()

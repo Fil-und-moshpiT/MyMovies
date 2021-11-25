@@ -6,10 +6,14 @@ import androidx.room.*
 interface MovieDAO {
 
     @Insert
-    fun insert(movie: InternalMovie)
+    fun insertRequest(movie: InternalMovie)
 
-    @Insert
-    fun insert(movies: List<InternalMovie>)
+    fun insert(movie: InternalMovie) {
+        insertRequest(movie)
+    }
+
+//    @Insert
+//    fun insert(movies: List<InternalMovie>)
 
 //    @Delete
 //    fun delete(movie: InternalMovie)
@@ -27,7 +31,7 @@ interface MovieDAO {
         val found = getById(movie.id)
 
         if (found.isEmpty()) {
-            insert(movie)
+            insertRequest(movie)
         }
 
         updateFavouriteRequest(movie.id, movie.favourite)
@@ -43,7 +47,7 @@ interface MovieDAO {
         val found = getById(movie.id)
 
         if (found.isEmpty()) {
-            insert(movie)
+            insertRequest(movie)
         }
 
         updateWatchLaterRequest(movie.id, movie.watchLater)

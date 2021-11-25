@@ -24,14 +24,15 @@ data class InternalMovie(
 
     val watchLater: Boolean
 ) {
-    /*constructor(movie: Movie) :
-            this(movie.id,
-                movie.name,
-                movie.description ?: "",
-                movie.image,
-                movie.rating,
-                false,
-                false)*/
+    constructor(movie: MovieEntity) :
+            this(
+                movie.getID(),
+                movie.getName(),
+                movie.getDescription(),
+                movie.getImage(),
+                HashMap<String, Int>(),
+                movie.getFavourite(),
+                movie.getWatchLater())
 
     fun toMovieEntity(): MovieEntity {
         val result = MovieEntity(id, name, description, image, rating)

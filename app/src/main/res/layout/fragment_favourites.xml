@@ -8,13 +8,13 @@
     tools:context=".presentation.favourites.FavouritesFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_favourites_list"
+        android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <TextView
-        android:id="@+id/tv_favourites_empty_list_label"
+        android:id="@+id/error_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -23,7 +23,7 @@
         android:textSize="20sp" />
 
     <ProgressBar
-        android:id="@+id/pb_favourites_loading_spinner"
+        android:id="@+id/loading_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp" />

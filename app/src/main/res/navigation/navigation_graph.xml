@@ -32,8 +32,6 @@
             tools:layout="@layout/fragment_favourites"/>
         <action
             android:id="@+id/action_nav_bottom_fragments_nav_movie_card_fragment"
-            app:destination="@id/nav_movie_card_fragment"
-            app:enterAnim="@anim/movie_card_open"
-            app:popExitAnim="@anim/movie_card_close" />
+            app:destination="@id/nav_movie_card_fragment" />
     </navigation>
 </navigation>

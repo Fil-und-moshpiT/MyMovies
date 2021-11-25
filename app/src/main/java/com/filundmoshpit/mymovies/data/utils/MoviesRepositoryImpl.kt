@@ -1,6 +1,6 @@
 package com.filundmoshpit.mymovies.data.utils
 
-import com.filundmoshpit.mymovies.data.external.KinopoiskAPI
+import com.filundmoshpit.mymovies.data.external.tmdb.TMDBApi
 import com.filundmoshpit.mymovies.data.internal.InternalMovie
 import com.filundmoshpit.mymovies.data.internal.MovieDAO
 import com.filundmoshpit.mymovies.domain.MovieEntity
@@ -8,13 +8,13 @@ import com.filundmoshpit.mymovies.domain.MoviesRepository
 import java.lang.Exception
 import java.net.UnknownHostException
 
-class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val internal: MovieDAO) : MoviesRepository {
+class MoviesRepositoryImpl(private val tmdb: TMDBApi, private val internal: MovieDAO) : MoviesRepository {
     override fun search(query: String) : ExternalResponse {
         try {
-            val response = external.search(query).execute()
+            val response = tmdb.search(query).execute()
 
             if (response.isSuccessful) {
-                val searchResponse = response.body()?.docs
+                val searchResponse = response.body()?.results
 
                 if (searchResponse == null) {
                     return ExternalError("Unknown response")
@@ -25,17 +25,16 @@ class MoviesRepositoryImpl(private val external: KinopoiskAPI, private val inter
                     for (externalMovie in searchResponse) {
                         val movie = externalMovie.toMovie()
 
-                        var favourite = false
-                        var watchlater = false
-
+                        //TODO: In search we don't need favourite and watch later data
                         val found = internal.getById(movie.getID())
                         if (found.isNotEmpty()) {
-                            favourite = found[0].favourite
-                            watchlater = found[0].watchLater
+                            movie.setFavourite(found[0].favourite)
+                            movie.setWatchLater(found[0].watchLater)
                         }
-
-                        movie.setFavourite(favourite)
-                        movie.setWatchLater(watchlater)
+                        else {
+                            //Create instance of movie in local DB
+                            internal.insert(InternalMovie(movie))
+                        }
 
                         movies.add(movie)
                     }

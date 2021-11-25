@@ -1,4 +1,4 @@
-package com.filundmoshpit.mymovies.data.external
+package com.filundmoshpit.mymovies.data.external.tmdb
 
 import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.google.gson.JsonDeserializationContext
@@ -6,36 +6,41 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
+import java.lang.Exception
 import java.lang.reflect.Type
 
-data class ExternalMovie(
+data class TMDBMovieEntity(
     @SerializedName("id")
     val id: Int,
 
-    @SerializedName("name")
+    @SerializedName("title")
     val name: String,
 
-    @SerializedName("description")
+    @SerializedName("overview")
     val description: String?,
 
-    @SerializedName("poster")
+    @SerializedName("poster_path")
     @JsonAdapter(GsonPosterDeserializer::class)
-    val image: String,
+    val image: String?,
 
-    @SerializedName("rating")
+    @SerializedName("vote_average")
     @JsonAdapter(GsonRatingDeserializer::class)
     val rating: HashMap<String, Int>
 ) {
     fun toMovie(): MovieEntity {
-        val movie = MovieEntity(id, name, description ?: "", image, rating)
-
-        return movie
+        return MovieEntity(id, name, description ?: "", image ?: "", rating)
     }
 
     //Gson
     object GsonPosterDeserializer : JsonDeserializer<String> {
         override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): String {
-            return json?.run { asJsonObject.get("previewUrl").asString } ?: ""
+            val path = json?.asString
+
+            if (path != null) {
+                return "https://image.tmdb.org/t/p/w200$path"
+            }
+
+            return ""
         }
     }
 
@@ -44,16 +49,12 @@ data class ExternalMovie(
             val result = HashMap<String, Int>()
 
             json?.run {
-                val keys = asJsonObject.keySet()
-
-                for (key in keys) {
-                    if (key.equals("kp") || key.equals("imdb")) {
-                        result[key] = asJsonObject.get(key).asInt
-                    }
-                }
+                result["imdb"] = this.asInt
             }
 
             return result
         }
     }
 }
+
+data class TMDBResponse(val results: List<TMDBMovieEntity>)
