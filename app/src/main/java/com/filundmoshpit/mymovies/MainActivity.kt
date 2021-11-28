@@ -8,12 +8,12 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import androidx.room.Room
-import com.filundmoshpit.mymovies.data.utils.MoviesRepositoryImpl
 import com.filundmoshpit.mymovies.data.external.tmdb.TMDBApi
 import com.filundmoshpit.mymovies.data.internal.MovieDAO
 import com.filundmoshpit.mymovies.data.internal.MoviesDatabase
+import com.filundmoshpit.mymovies.data.utils.MoviesRepositoryImpl
+import com.filundmoshpit.mymovies.databinding.ActivityMainBinding
 import com.filundmoshpit.mymovies.domain.*
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -43,9 +43,12 @@ TODO:
     ?ADD OMDB
     Add constructors to internal/external movies
     +Remove Kinopoisk API
+    Add universal view holder
 */
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
 
     companion object {
         private lateinit var tmdbService: TMDBApi
@@ -58,12 +61,13 @@ class MainActivity : AppCompatActivity() {
         lateinit var favouritesUseCase: FavouritesUseCase
     }
 
-    private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var navigationController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
 
@@ -80,10 +84,34 @@ class MainActivity : AppCompatActivity() {
         favouritesUseCase = FavouritesUseCase(moviesRepository)
 
         //Navigation
-        bottomNavigationView = findViewById(R.id.bottom_navigation_menu)
         navigationController = (supportFragmentManager.findFragmentById(R.id.navigation_host_fragment) as NavHostFragment).navController
 
-        NavigationUI.setupWithNavController(bottomNavigationView, navigationController)
+        navigationController.addOnDestinationChangedListener { controller, destination, arguments ->
+            when (destination.id) {
+                R.id.nav_movie_card_fragment -> {
+//                    binding.bottomNavigationMenu.menu.clear()
+//                    binding.bottomNavigationMenu.inflateMenu(R.menu.bottom_navigation_menu_movie_card)
+
+//                    binding.bottomNavigationMenu.menu.clear()
+//                    menuInflater.inflate(R.menu.bottom_navigation_menu_movie_card, binding.bottomNavigationMenu.menu)
+
+//                    binding.bottomNavigationMenu.replaceMenu(R.menu.bottom_navigation_menu_movie_card)
+//                    binding.bottomNavigationMenu.performShow()
+                }
+                else -> {
+//                    binding.bottomNavigationMenu.menu.clear()
+//                    binding.bottomNavigationMenu.inflateMenu(R.menu.bottom_navigation_menu)
+
+//                    binding.bottomNavigationMenu.menu.clear()
+//                    menuInflater.inflate(R.menu.bottom_navigation_menu, binding.bottomNavigationMenu.menu)
+
+//                    binding.bottomNavigationMenu.replaceMenu(R.menu.bottom_navigation_menu)
+//                    binding.bottomNavigationMenu.performShow()
+                }
+            }
+        }
+
+        NavigationUI.setupWithNavController(binding.bottomNavigationMenu, navigationController)
     }
 
     private fun configureTMDBApi() {

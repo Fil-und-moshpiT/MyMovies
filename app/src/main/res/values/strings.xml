@@ -10,7 +10,7 @@
     <string name="navigation_menu_watch_later">To watch</string>
 
     <!--Search fragment-->
-    <string name="search_search_button">Search</string>
+    <string name="search_button">Search</string>
     <string name="search_error_empty_list">Nothing was found</string>
     <string name="search_error_network">Network error</string>
 
@@ -23,5 +23,6 @@
     <!--Movie card fragment-->
     <string name="movie_card_watch_later_button">Watch Later</string>
     <string name="movie_card_favourite_button">Favourite</string>
+    <string name="movie_card_transition_name">movie_card_transition_name</string>
 
 </resources>

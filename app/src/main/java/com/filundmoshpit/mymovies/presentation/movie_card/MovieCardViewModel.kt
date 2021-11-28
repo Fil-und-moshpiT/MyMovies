@@ -15,7 +15,7 @@ class MovieCardViewModel(private val useCase: MovieCardUseCase) : ViewModel() {
     val status = MutableStateFlow(LoadingStatuses.EMPTY)
     val movie = MutableSharedFlow<MovieEntity>(1)
 
-    private fun setStatus(value: LoadingStatuses) {
+    fun setStatus(value: LoadingStatuses) {
         status.value = value
     }
 

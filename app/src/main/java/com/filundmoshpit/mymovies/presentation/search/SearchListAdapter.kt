@@ -1,31 +1,29 @@
 package com.filundmoshpit.mymovies.presentation.search
 
-import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.filundmoshpit.mymovies.R
+import com.filundmoshpit.mymovies.databinding.MovieListItemBinding
 import com.filundmoshpit.mymovies.domain.MovieEntity
 
 class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<MovieEntity, SearchListAdapter.MoviesViewHolder>(MovieDiffCallback) {
+
+    private lateinit var binding: MovieListItemBinding
 
     companion object {
         var count = 0
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        binding = MovieListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        //val binding = MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-
-        return MoviesViewHolder(view)
+        return MoviesViewHolder(binding)
     }
 
     override fun onCurrentListChanged(previousList: MutableList<MovieEntity>, currentList: MutableList<MovieEntity>) {
@@ -44,34 +42,33 @@ class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<MovieEntit
         return count
     }
 
-    inner class MoviesViewHolder(item: View) : RecyclerView.ViewHolder(item) {
-
-        private val name: TextView = itemView.findViewById(R.id.movie_name)
-        private val description: TextView = itemView.findViewById(R.id.movie_description)
-        private val poster: ImageView = itemView.findViewById(R.id.movie_poster)
+    inner class MoviesViewHolder(private val itemBinding: MovieListItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
 
         private var movie: MovieEntity? = null
 
         init {
             itemView.setOnClickListener {
                 if (movie != null) {
-                    val bundle = Bundle().apply {
-                        putInt("id", movie!!.getID())
-                    }
+                    val movieCardTransitionName = itemView.context.getString(R.string.movie_card_transition_name)
 
-                    itemView.findNavController().navigate(R.id.action_nav_bottom_fragments_nav_movie_card_fragment, bundle)
+                    val action = SearchFragmentDirections.actionNavBottomFragmentsNavMovieCardFragment(movie!!.getID())
+                    val extras = FragmentNavigatorExtras(itemView to movieCardTransitionName)
+
+                    itemView.findNavController().navigate(action, extras)
                 }
             }
         }
 
         fun bind(movie: MovieEntity) {
+            itemView.transitionName = "movie_list_item_${movie.getID()}"
+
             this.movie = movie
-            this.name.text = movie.getName()
-            this.description.text = movie.getDescription()
+            itemBinding.movieTitle.text = movie.getName()
+            itemBinding.movieDescription.text = movie.getDescription()
 
             Glide.with(itemView)
                 .load(movie.getImage())
-                .into(poster)
+                .into(itemBinding.moviePoster)
         }
     }
 

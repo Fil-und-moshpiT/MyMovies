@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -13,6 +14,7 @@ import com.filundmoshpit.mymovies.MainActivity
 import com.filundmoshpit.mymovies.databinding.FragmentSearchBinding
 import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.presentation.util.LoadingStatuses
+import com.google.android.material.transition.Hold
 import kotlinx.coroutines.flow.collect
 
 class SearchFragment : Fragment() {
@@ -20,6 +22,14 @@ class SearchFragment : Fragment() {
     private lateinit var viewModel: SearchViewModel
 
     private lateinit var binding: FragmentSearchBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        //Animation
+        exitTransition = Hold()
+        reenterTransition = Hold()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
@@ -35,6 +45,7 @@ class SearchFragment : Fragment() {
 
         binding.searchButton.setOnClickListener { viewModel.search() }
 
+        binding.list.setHasFixedSize(true)
         binding.list.itemAnimator = null
         binding.list.adapter = listAdapter
 
@@ -44,6 +55,11 @@ class SearchFragment : Fragment() {
         lifecycleScope.launchWhenStarted { viewModel.errorTextId.collect { onErrorChange(it) } }
 
         initialize()
+
+        //Animation
+        //Required for reenter transition
+        postponeEnterTransition()
+        binding.root.doOnPreDraw { startPostponedEnterTransition() }
 
         return binding.root
     }
