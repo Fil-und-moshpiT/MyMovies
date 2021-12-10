@@ -2,7 +2,7 @@ package com.filundmoshpit.mymovies.presentation.movie_card
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.filundmoshpit.mymovies.domain.MovieCardUseCase
+import com.filundmoshpit.mymovies.domain.usecases.MovieCardUseCase
 
 class MovieCardViewModelFactory(private val useCase: MovieCardUseCase) : ViewModelProvider.Factory {
 

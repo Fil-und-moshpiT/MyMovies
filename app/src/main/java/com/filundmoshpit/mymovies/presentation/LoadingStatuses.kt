@@ -1,4 +1,4 @@
-package com.filundmoshpit.mymovies.presentation.util
+package com.filundmoshpit.mymovies.presentation
 
 enum class LoadingStatuses {
     EMPTY,

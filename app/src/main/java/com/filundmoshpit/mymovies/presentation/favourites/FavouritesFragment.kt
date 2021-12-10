@@ -4,16 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.filundmoshpit.mymovies.MainActivity
 import com.filundmoshpit.mymovies.databinding.FragmentFavouritesBinding
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.presentation.util.LoadingStatuses
-import com.google.android.material.transition.Hold
+import com.filundmoshpit.mymovies.BusEvents
+import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.flow.collect
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class FavouritesFragment : Fragment() {
 
@@ -21,39 +22,50 @@ class FavouritesFragment : Fragment() {
 
     private lateinit var binding: FragmentFavouritesBinding
 
+    private var listAdapter = FavouritesListAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Animation
-        exitTransition = Hold()
-        reenterTransition = Hold()
-    }
+        EventBus.getDefault().register(this)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentFavouritesBinding.inflate(inflater, container, false)
+        //Animation
+//        exitTransition = Hold()
+//        reenterTransition = Hold()
 
         viewModel =
             ViewModelProvider(requireActivity(), FavouritesViewModelFactory(MainActivity.favouritesUseCase))
                 .get(FavouritesViewModel::class.java)
 
-        val listAdapter = FavouritesListAdapter()
+        //ViewModel observer on create
+        lifecycleScope.launchWhenCreated { viewModel.movies.collect { listAdapter.submitList(it as MutableList<MovieEntity>) } }
+
+        //Load data
+        viewModel.load()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentFavouritesBinding.inflate(inflater, container, false)
 
         binding.list.setHasFixedSize(true)
         binding.list.itemAnimator = null
         binding.list.adapter = listAdapter
 
-        //ViewModel observers
-        lifecycleScope.launchWhenStarted { viewModel.movies.collect { listAdapter.submitList(it as MutableList<MovieEntity>) } }
+        //ViewModel observer on start
         lifecycleScope.launchWhenStarted { viewModel.status.collect { onStatusChange(it) } }
-
-        viewModel.load()
 
         //Animation
         //Required for reenter transition
-        postponeEnterTransition()
-        binding.root.doOnPreDraw { startPostponedEnterTransition() }
+//        postponeEnterTransition()
+//        binding.root.doOnPreDraw { startPostponedEnterTransition() }
 
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        EventBus.getDefault().unregister(this)
     }
 
     private fun onStatusChange(status: LoadingStatuses) {
@@ -66,5 +78,12 @@ class FavouritesFragment : Fragment() {
             LoadingStatuses.LOADING -> { binding.loadingSpinner.visibility = View.VISIBLE }
             LoadingStatuses.LOADED -> { binding.list.visibility = View.VISIBLE }
         }
+    }
+
+    @Subscribe
+    fun onFavouriteChanged(event: BusEvents.FavouriteChanged) {
+//        Toast.makeText(context, "Favourite changed", Toast.LENGTH_SHORT).show()
+
+        viewModel.load()
     }
 }

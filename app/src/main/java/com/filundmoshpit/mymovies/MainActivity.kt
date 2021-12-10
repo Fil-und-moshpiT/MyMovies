@@ -1,12 +1,13 @@
 package com.filundmoshpit.mymovies
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import androidx.room.Room
 import com.filundmoshpit.mymovies.data.external.tmdb.TMDBApi
 import com.filundmoshpit.mymovies.data.internal.MovieDAO
@@ -14,6 +15,10 @@ import com.filundmoshpit.mymovies.data.internal.MoviesDatabase
 import com.filundmoshpit.mymovies.data.utils.MoviesRepositoryImpl
 import com.filundmoshpit.mymovies.databinding.ActivityMainBinding
 import com.filundmoshpit.mymovies.domain.*
+import com.filundmoshpit.mymovies.domain.usecases.FavouritesUseCase
+import com.filundmoshpit.mymovies.domain.usecases.MovieCardUseCase
+import com.filundmoshpit.mymovies.domain.usecases.SearchUseCase
+import com.filundmoshpit.mymovies.domain.usecases.WatchLaterUseCase
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -36,14 +41,15 @@ TODO:
     +Add network to database caching while search
     +Add ViewBinding
     Add animations
-    Remove reloadings in watch later and favourites lists
-    Show/hide bottom navigation bar
+    +Show/hide bottom navigation bar
     Add stars rating
     +Add TMDB
     ?ADD OMDB
     Add constructors to internal/external movies
     +Remove Kinopoisk API
-    Add universal view holder
+    +Add universal view holder
+    +Add EventBus to fragments (update watch later & favourite)
+    Add settings fragment
 */
 
 class MainActivity : AppCompatActivity() {
@@ -73,7 +79,6 @@ class MainActivity : AppCompatActivity() {
 
         //Data services configuration
         configureTMDBApi()
-
         configureInternalDB()
 
         moviesRepository = MoviesRepositoryImpl(tmdbService, databaseService)
@@ -89,29 +94,19 @@ class MainActivity : AppCompatActivity() {
         navigationController.addOnDestinationChangedListener { controller, destination, arguments ->
             when (destination.id) {
                 R.id.nav_movie_card_fragment -> {
-//                    binding.bottomNavigationMenu.menu.clear()
-//                    binding.bottomNavigationMenu.inflateMenu(R.menu.bottom_navigation_menu_movie_card)
-
-//                    binding.bottomNavigationMenu.menu.clear()
-//                    menuInflater.inflate(R.menu.bottom_navigation_menu_movie_card, binding.bottomNavigationMenu.menu)
-
-//                    binding.bottomNavigationMenu.replaceMenu(R.menu.bottom_navigation_menu_movie_card)
-//                    binding.bottomNavigationMenu.performShow()
+                    if (binding.bottomNavigationMenu.visibility == View.VISIBLE) {
+                        binding.bottomNavigationMenu.visibility = View.INVISIBLE
+                    }
                 }
                 else -> {
-//                    binding.bottomNavigationMenu.menu.clear()
-//                    binding.bottomNavigationMenu.inflateMenu(R.menu.bottom_navigation_menu)
-
-//                    binding.bottomNavigationMenu.menu.clear()
-//                    menuInflater.inflate(R.menu.bottom_navigation_menu, binding.bottomNavigationMenu.menu)
-
-//                    binding.bottomNavigationMenu.replaceMenu(R.menu.bottom_navigation_menu)
-//                    binding.bottomNavigationMenu.performShow()
+                    if (binding.bottomNavigationMenu.visibility == View.INVISIBLE) {
+                        binding.bottomNavigationMenu.visibility = View.VISIBLE
+                    }
                 }
             }
         }
 
-        NavigationUI.setupWithNavController(binding.bottomNavigationMenu, navigationController)
+        binding.bottomNavigationMenu.setupWithNavController(navigationController)
     }
 
     private fun configureTMDBApi() {

@@ -13,8 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.filundmoshpit.mymovies.MainActivity
 import com.filundmoshpit.mymovies.databinding.FragmentSearchBinding
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.presentation.util.LoadingStatuses
-import com.google.android.material.transition.Hold
+import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.flow.collect
 
 class SearchFragment : Fragment() {
@@ -27,8 +26,8 @@ class SearchFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         //Animation
-        exitTransition = Hold()
-        reenterTransition = Hold()
+//        exitTransition = Hold()
+//        reenterTransition = Hold()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -38,7 +37,7 @@ class SearchFragment : Fragment() {
             ViewModelProvider(requireActivity(), SearchViewModelFactory(MainActivity.searchUseCase))
                 .get(SearchViewModel::class.java)
 
-        val listAdapter = SearchListAdapter(viewModel)
+        val listAdapter = SearchListAdapter()
 
         //Bindings
         binding.searchQuery.addTextChangedListener(LocalTextWatcher())

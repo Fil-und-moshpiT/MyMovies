@@ -2,17 +2,14 @@ package com.filundmoshpit.mymovies.presentation.watch_later
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.databinding.MovieListItemBinding
 import com.filundmoshpit.mymovies.domain.MovieEntity
+import com.filundmoshpit.mymovies.presentation.ListItemViewHolder
 
-class WatchLaterListAdapter(val viewModel: WatchLaterViewModel) : ListAdapter<MovieEntity, WatchLaterListAdapter.MoviesViewHolder>(MovieDiffCallback) {
+class WatchLaterListAdapter : ListAdapter<MovieEntity, ListItemViewHolder>(MovieDiffCallback) {
 
     private lateinit var binding: MovieListItemBinding
 
@@ -20,10 +17,10 @@ class WatchLaterListAdapter(val viewModel: WatchLaterViewModel) : ListAdapter<Mo
         var count = 0
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
-        val binding = MovieListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListItemViewHolder {
+        binding = MovieListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return MoviesViewHolder(binding)
+        return ListItemViewHolder(binding)
     }
 
     override fun onCurrentListChanged(previousList: MutableList<MovieEntity>, currentList: MutableList<MovieEntity>) {
@@ -34,7 +31,7 @@ class WatchLaterListAdapter(val viewModel: WatchLaterViewModel) : ListAdapter<Mo
         return R.layout.movie_list_item
     }
 
-    override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ListItemViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
@@ -42,35 +39,10 @@ class WatchLaterListAdapter(val viewModel: WatchLaterViewModel) : ListAdapter<Mo
         return count
     }
 
-    inner class MoviesViewHolder(private val itemBinding: MovieListItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-
-        private var movie: MovieEntity? = null
-
-        init {
-            itemView.setOnClickListener {
-                if (movie != null) {
-                    val movieCardTransitionName = itemView.context.getString(R.string.movie_card_transition_name)
-
-                    val action = WatchLaterFragmentDirections.actionNavBottomFragmentsNavMovieCardFragment(movie!!.getID())
-                    val extras = FragmentNavigatorExtras(itemView to movieCardTransitionName)
-
-                    itemView.findNavController().navigate(action, extras)
-                }
-            }
-        }
-
-        fun bind(movie: MovieEntity) {
-            itemView.transitionName = "movie_list_item_${movie.getID()}"
-
-            this.movie = movie
-            itemBinding.movieTitle.text = movie.getName()
-            itemBinding.movieDescription.text = movie.getDescription()
-
-            Glide.with(itemView)
-                .load(movie.getImage())
-                .into(itemBinding.moviePoster)
-        }
-    }
+//    fun removeItem(movieId: Int) {
+//        currentList.removeIf { it.getID() == movieId }
+//        notifyDataSetChanged()
+//    }
 
     object MovieDiffCallback : DiffUtil.ItemCallback<MovieEntity>() {
         override fun areItemsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {

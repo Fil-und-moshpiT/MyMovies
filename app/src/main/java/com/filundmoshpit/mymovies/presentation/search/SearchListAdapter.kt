@@ -2,17 +2,14 @@ package com.filundmoshpit.mymovies.presentation.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.databinding.MovieListItemBinding
 import com.filundmoshpit.mymovies.domain.MovieEntity
+import com.filundmoshpit.mymovies.presentation.ListItemViewHolder
 
-class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<MovieEntity, SearchListAdapter.MoviesViewHolder>(MovieDiffCallback) {
+class SearchListAdapter : ListAdapter<MovieEntity, ListItemViewHolder>(MovieDiffCallback) {
 
     private lateinit var binding: MovieListItemBinding
 
@@ -20,10 +17,10 @@ class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<MovieEntit
         var count = 0
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListItemViewHolder {
         binding = MovieListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return MoviesViewHolder(binding)
+        return ListItemViewHolder(binding)
     }
 
     override fun onCurrentListChanged(previousList: MutableList<MovieEntity>, currentList: MutableList<MovieEntity>) {
@@ -34,42 +31,12 @@ class SearchListAdapter(val viewModel: SearchViewModel) : ListAdapter<MovieEntit
         return R.layout.movie_list_item
     }
 
-    override fun onBindViewHolder(holder: MoviesViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ListItemViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
     override fun getItemCount(): Int {
         return count
-    }
-
-    inner class MoviesViewHolder(private val itemBinding: MovieListItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
-
-        private var movie: MovieEntity? = null
-
-        init {
-            itemView.setOnClickListener {
-                if (movie != null) {
-                    val movieCardTransitionName = itemView.context.getString(R.string.movie_card_transition_name)
-
-                    val action = SearchFragmentDirections.actionNavBottomFragmentsNavMovieCardFragment(movie!!.getID())
-                    val extras = FragmentNavigatorExtras(itemView to movieCardTransitionName)
-
-                    itemView.findNavController().navigate(action, extras)
-                }
-            }
-        }
-
-        fun bind(movie: MovieEntity) {
-            itemView.transitionName = "movie_list_item_${movie.getID()}"
-
-            this.movie = movie
-            itemBinding.movieTitle.text = movie.getName()
-            itemBinding.movieDescription.text = movie.getDescription()
-
-            Glide.with(itemView)
-                .load(movie.getImage())
-                .into(itemBinding.moviePoster)
-        }
     }
 
     object MovieDiffCallback : DiffUtil.ItemCallback<MovieEntity>() {

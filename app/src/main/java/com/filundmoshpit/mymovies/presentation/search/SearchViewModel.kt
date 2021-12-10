@@ -5,8 +5,8 @@ import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.data.utils.ExternalError
 import com.filundmoshpit.mymovies.data.utils.ExternalSuccess
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.domain.SearchUseCase
-import com.filundmoshpit.mymovies.presentation.util.LoadingStatuses
+import com.filundmoshpit.mymovies.domain.usecases.SearchUseCase
+import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow

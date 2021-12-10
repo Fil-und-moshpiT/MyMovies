@@ -1,6 +1,5 @@
 package com.filundmoshpit.mymovies.presentation.movie_card
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +13,13 @@ import com.filundmoshpit.mymovies.MainActivity
 import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.databinding.FragmentMovieCardBinding
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.presentation.util.LoadingStatuses
-import com.google.android.material.transition.MaterialContainerTransform
+import com.filundmoshpit.mymovies.BusEvents
+import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.flow.collect
+import org.greenrobot.eventbus.EventBus
+
+
+
 
 class MovieCardFragment : Fragment() {
 
@@ -29,37 +32,42 @@ class MovieCardFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        viewModel =
+            ViewModelProvider(requireActivity(), MovieCardViewModelFactory(MainActivity.movieCardUseCase))
+                .get(MovieCardViewModel::class.java)
+
         //Animation
-        sharedElementEnterTransition = MaterialContainerTransform().apply { 
-            drawingViewId = R.id.navigation_host_fragment
-            duration = resources.getInteger(R.integer.material_motion_duration_long_1).toLong()
-            scrimColor = Color.TRANSPARENT
-            setAllContainerColors(context!!.getColor(R.color.white))
-        }
+//        sharedElementEnterTransition = MaterialContainerTransform().apply {
+//            drawingViewId = R.id.navigation_host_fragment
+//            duration = resources.getInteger(R.integer.material_motion_duration_long_1).toLong()
+//            scrimColor = Color.TRANSPARENT
+//            setAllContainerColors(context!!.getColor(R.color.white))
+//        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMovieCardBinding.inflate(inflater, container, false)
 
-        viewModel =
-            ViewModelProvider(requireActivity(), MovieCardViewModelFactory(MainActivity.movieCardUseCase))
-                .get(MovieCardViewModel::class.java)
-
         binding.watchLaterButton.setOnClickListener {
             movie.changeWatchLater()
             viewModel.updateWatchLater(movie)
+
+            EventBus.getDefault().post(BusEvents.WatchLaterChanged)
+
             updateIcons()
         }
 
         binding.favouriteButton.setOnClickListener {
             movie.changeFavourite()
             viewModel.updateFavourite(movie)
+
+            EventBus.getDefault().post(BusEvents.FavouriteChanged)
+
             updateIcons()
         }
 
         //Collecting view model changes
         lifecycleScope.launchWhenCreated { viewModel.status.collect { onStatusChange(it) } }
-
         lifecycleScope.launchWhenCreated { viewModel.movie.collect { onDataLoaded(it) } }
 
         //Get data

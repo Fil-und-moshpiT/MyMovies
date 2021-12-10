@@ -1,9 +1,9 @@
 package com.filundmoshpit.mymovies.presentation.movie_card
 
 import androidx.lifecycle.ViewModel
-import com.filundmoshpit.mymovies.domain.MovieCardUseCase
+import com.filundmoshpit.mymovies.domain.usecases.MovieCardUseCase
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.presentation.util.LoadingStatuses
+import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -17,7 +17,7 @@ class MoviesRepositoryImpl(private val tmdb: TMDBApi, private val internal: Movi
                 val searchResponse = response.body()?.results
 
                 if (searchResponse == null) {
-                    return ExternalError("Unknown response")
+                    return ExternalError()
                 }
                 else {
                     val movies = ArrayList<MovieEntity>()
@@ -43,14 +43,14 @@ class MoviesRepositoryImpl(private val tmdb: TMDBApi, private val internal: Movi
                 }
             }
             else {
-                return ExternalError(response.message())
+                return ExternalError()
             }
         }
         catch (e: UnknownHostException) {
-            return ExternalError("Connection error")
+            return ExternalError()
         }
         catch (e: Exception) {
-            return ExternalError(e.toString())
+            return ExternalError()
         }
     }
 

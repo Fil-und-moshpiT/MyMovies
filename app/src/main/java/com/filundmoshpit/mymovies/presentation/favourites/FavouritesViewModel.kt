@@ -1,9 +1,9 @@
 package com.filundmoshpit.mymovies.presentation.favourites
 
 import androidx.lifecycle.ViewModel
-import com.filundmoshpit.mymovies.domain.FavouritesUseCase
+import com.filundmoshpit.mymovies.domain.usecases.FavouritesUseCase
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.presentation.util.LoadingStatuses
+import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
