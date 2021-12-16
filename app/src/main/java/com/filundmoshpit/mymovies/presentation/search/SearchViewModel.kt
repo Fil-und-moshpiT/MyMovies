@@ -1,14 +1,14 @@
 package com.filundmoshpit.mymovies.presentation.search
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.filundmoshpit.mymovies.R
-import com.filundmoshpit.mymovies.data.utils.ExternalError
-import com.filundmoshpit.mymovies.data.utils.ExternalSuccess
+import com.filundmoshpit.mymovies.data.external.ExternalResponse
 import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.domain.usecases.SearchUseCase
 import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -54,9 +54,9 @@ class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
         setStatus(LoadingStatuses.LOADING)
         clearMovies()
 
-        GlobalScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             when (val response = useCase.search(getQuery())) {
-                is ExternalSuccess -> {
+                is ExternalResponse.ExternalSuccess -> {
                     val loaded = response.getMovies()
 
                     if (loaded.isNotEmpty()) {
@@ -68,7 +68,7 @@ class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
                         setStatus(LoadingStatuses.EMPTY)
                     }
                 }
-                is ExternalError -> {
+                is ExternalResponse.ExternalError -> {
                     setError(ERROR_STRING_ID_NETWORK)
                     setStatus(LoadingStatuses.EMPTY)
                 }
@@ -79,5 +79,12 @@ class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
     companion object {
         const val ERROR_STRING_ID_EMPTY = R.string.search_error_empty_list
         const val ERROR_STRING_ID_NETWORK = R.string.search_error_network
+    }
+}
+
+class SearchViewModelFactory(private val useCase: SearchUseCase) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return SearchViewModel(useCase) as T
     }
 }

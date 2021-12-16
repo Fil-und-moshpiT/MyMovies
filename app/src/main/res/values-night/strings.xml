@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--General-->
-    <string name="app_name">MyMovies</string>
+    <string name="app_name" translatable="false">My Movies</string>
 
     <!--Bottom navigation menu-->
     <string name="navigation_menu_search_label">Search</string>

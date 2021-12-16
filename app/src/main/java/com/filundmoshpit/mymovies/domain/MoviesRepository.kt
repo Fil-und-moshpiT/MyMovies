@@ -1,6 +1,6 @@
 package com.filundmoshpit.mymovies.domain
 
-import com.filundmoshpit.mymovies.data.utils.ExternalResponse
+import com.filundmoshpit.mymovies.data.external.ExternalResponse
 
 interface MoviesRepository {
 

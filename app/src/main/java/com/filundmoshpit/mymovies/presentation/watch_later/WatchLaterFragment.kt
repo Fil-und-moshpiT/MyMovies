@@ -82,8 +82,6 @@ class WatchLaterFragment : Fragment() {
 
     @Subscribe
     fun onWatchLaterChanged(event: BusEvents.WatchLaterChanged) {
-//        Toast.makeText(context, "Watch later changed", Toast.LENGTH_SHORT).show()
-
         viewModel.load()
     }
 }

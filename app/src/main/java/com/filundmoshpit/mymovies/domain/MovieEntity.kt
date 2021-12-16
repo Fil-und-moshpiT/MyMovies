@@ -2,22 +2,14 @@ package com.filundmoshpit.mymovies.domain
 
 //Using in UI lists
 class MovieEntity(
-    private val id: Int,
-    private val name: String,
-    private val description: String,
-    private val image: String,
-    private val rating: HashMap<String, Int>
+    val id: Int,
+    val name: String,
+    val description: String,
+    val image: String,
+    val rating: Float
 ) {
     private var favourite: Boolean = false
     private var watchLater: Boolean = false
-
-    fun getID() = id
-
-    fun getName() = name
-
-    fun getDescription() = description
-
-    fun getImage() = image
 
     fun getFavourite() = favourite
 

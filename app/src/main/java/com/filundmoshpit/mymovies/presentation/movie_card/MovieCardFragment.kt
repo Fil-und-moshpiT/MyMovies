@@ -1,10 +1,13 @@
 package com.filundmoshpit.mymovies.presentation.movie_card
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -13,13 +16,9 @@ import com.filundmoshpit.mymovies.MainActivity
 import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.databinding.FragmentMovieCardBinding
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.BusEvents
 import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.flow.collect
-import org.greenrobot.eventbus.EventBus
-
-
-
+import kotlin.math.floor
 
 class MovieCardFragment : Fragment() {
 
@@ -52,18 +51,14 @@ class MovieCardFragment : Fragment() {
             movie.changeWatchLater()
             viewModel.updateWatchLater(movie)
 
-            EventBus.getDefault().post(BusEvents.WatchLaterChanged)
-
-            updateIcons()
+            updateButtonIcons()
         }
 
         binding.favouriteButton.setOnClickListener {
             movie.changeFavourite()
             viewModel.updateFavourite(movie)
 
-            EventBus.getDefault().post(BusEvents.FavouriteChanged)
-
-            updateIcons()
+            updateButtonIcons()
         }
 
         //Collecting view model changes
@@ -96,17 +91,44 @@ class MovieCardFragment : Fragment() {
     private fun onDataLoaded(movie: MovieEntity) {
         this.movie = movie
 
-        binding.movieTitle.text = movie.getName()
-        binding.movieDescription.text = movie.getDescription()
+        binding.movieTitle.text = movie.name
+        binding.movieDescription.text = movie.description
 
         Glide.with(this)
-            .load(movie.getImage())
+            .load(movie.image)
             .into(binding.moviePoster)
 
-        updateIcons()
+        setRatingIcons()
+
+        updateButtonIcons()
     }
 
-    private fun updateIcons() {
+    private fun setRatingIcons() {
+        var rating = (floor(movie.rating) / 2.0).toFloat()
+
+        setRatingIcon(binding.movieTmdbRatingStar1, rating)
+        rating--
+        setRatingIcon(binding.movieTmdbRatingStar2, rating)
+        rating--
+        setRatingIcon(binding.movieTmdbRatingStar3, rating)
+        rating--
+        setRatingIcon(binding.movieTmdbRatingStar4, rating)
+        rating--
+        setRatingIcon(binding.movieTmdbRatingStar5, rating)
+    }
+
+    private fun setRatingIcon(view: ImageView, rating: Float) {
+        when {
+            rating >= 1 ->
+                view.setImageDrawable(ContextCompat.getDrawable(activity as Context, R.drawable.ic_rating_full))
+            rating >= 0.5 ->
+                view.setImageDrawable(ContextCompat.getDrawable(activity as Context, R.drawable.ic_rating_half))
+            else ->
+                view.setImageDrawable(ContextCompat.getDrawable(activity as Context, R.drawable.ic_rating_empty))
+        }
+    }
+
+    private fun updateButtonIcons() {
         val localContext = requireContext()
 
         var iconWatchLater = AppCompatResources.getDrawable(localContext, R.drawable.ic_list_item_watch_later_unchecked)

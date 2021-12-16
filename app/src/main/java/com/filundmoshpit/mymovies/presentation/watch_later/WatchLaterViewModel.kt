@@ -1,11 +1,12 @@
 package com.filundmoshpit.mymovies.presentation.watch_later
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.domain.usecases.WatchLaterUseCase
 import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -31,7 +32,7 @@ class WatchLaterViewModel(private val useCase: WatchLaterUseCase) : ViewModel() 
         setStatus(LoadingStatuses.LOADING)
         clearMovies()
 
-        GlobalScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             val founded = useCase.load()
 
             if (founded.isNotEmpty()) {
@@ -42,5 +43,12 @@ class WatchLaterViewModel(private val useCase: WatchLaterUseCase) : ViewModel() 
                 setStatus(LoadingStatuses.EMPTY)
             }
         }
+    }
+}
+
+class WatchLaterViewModelFactory(private val useCase: WatchLaterUseCase) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return WatchLaterViewModel(useCase) as T
     }
 }

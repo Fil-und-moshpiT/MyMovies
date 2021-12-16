@@ -2,37 +2,28 @@ package com.filundmoshpit.mymovies.data.internal
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
 import com.filundmoshpit.mymovies.domain.MovieEntity
 
 @Entity
-@TypeConverters(InternalMovie.RoomRatingConverter::class)
 data class InternalMovie(
     @PrimaryKey
     val id: Int,
-
     val name: String,
-
     val description: String,
-
     val image: String,
-
-    val rating: HashMap<String, Int>,
-
+    val rating: Float,
     val favourite: Boolean,
-
     val watchLater: Boolean
 ) {
-    constructor(movie: MovieEntity) :
-            this(
-                movie.getID(),
-                movie.getName(),
-                movie.getDescription(),
-                movie.getImage(),
-                HashMap<String, Int>(),
-                movie.getFavourite(),
-                movie.getWatchLater())
+    constructor(movie: MovieEntity) : this(
+        movie.id,
+        movie.name,
+        movie.description,
+        movie.image,
+        movie.rating,
+        movie.getFavourite(),
+        movie.getWatchLater()
+    )
 
     fun toMovieEntity(): MovieEntity {
         val result = MovieEntity(id, name, description, image, rating)
@@ -40,33 +31,5 @@ data class InternalMovie(
         result.setWatchLater(watchLater)
 
         return result
-    }
-
-    object RoomRatingConverter {
-        @TypeConverter
-        fun fromRating(ratings: HashMap<String, Int>): String {
-            val strings = ArrayList<String>()
-
-            for (entry in ratings) {
-                strings.add("${entry.key}:${entry.value}")
-            }
-
-            return strings.joinToString()
-        }
-
-        @TypeConverter
-        fun toRating(ratings: String): HashMap<String, Int> {
-            val result = HashMap<String, Int>()
-
-            for (entry in ratings.split(",")) {
-                val keyvalue = entry.split(":")
-
-                if (keyvalue.size == 2) {
-                    result[keyvalue[0]] = keyvalue[1].toInt()
-                }
-            }
-
-            return result
-        }
     }
 }

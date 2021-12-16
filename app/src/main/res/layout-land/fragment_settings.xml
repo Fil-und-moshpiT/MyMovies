@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".presentation.settings.SettingsFragment">
+    android:orientation="horizontal"
+    tools:context=".presentation.settings.SettingsFragment"
+    android:baselineAligned="false">
 
     <!--Info-->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
@@ -40,8 +42,9 @@
     <!--Settings-->
     <LinearLayout
         android:id="@+id/settings_list"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:padding="16dp">
 

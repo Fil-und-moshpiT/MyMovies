@@ -16,7 +16,7 @@ class ListItemViewHolder(private val itemBinding: MovieListItemBinding) :
         itemView.setOnClickListener {
             if (movie != null) {
 //                val movieCardTransitionName = itemView.context.getString(R.string.movie_card_transition_name)
-                val action = NavBottomFragmentsDirections.actionNavBottomFragmentsNavMovieCardFragment(movie!!.getID())
+                val action = NavBottomFragmentsDirections.actionNavBottomFragmentsNavMovieCardFragment(movie!!.id)
 //                val extras = FragmentNavigatorExtras(itemView to movieCardTransitionName)
 
 //                itemView.findNavController().navigate(action, extras)
@@ -26,14 +26,14 @@ class ListItemViewHolder(private val itemBinding: MovieListItemBinding) :
     }
 
     fun bind(movie: MovieEntity) {
-        itemView.transitionName = "movie_list_item_${movie.getID()}"
+        itemView.transitionName = "movie_list_item_${movie.id}"
 
         this.movie = movie
-        itemBinding.movieTitle.text = movie.getName()
-        itemBinding.movieDescription.text = movie.getDescription()
+        itemBinding.movieTitle.text = movie.name
+        itemBinding.movieDescription.text = movie.description
 
         Glide.with(itemView)
-            .load(movie.getImage())
+            .load(movie.image)
             .into(itemBinding.moviePoster)
     }
 }

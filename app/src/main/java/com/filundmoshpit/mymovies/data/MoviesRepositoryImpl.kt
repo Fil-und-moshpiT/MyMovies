@@ -1,11 +1,11 @@
-package com.filundmoshpit.mymovies.data.utils
+package com.filundmoshpit.mymovies.data
 
+import com.filundmoshpit.mymovies.data.external.ExternalResponse
 import com.filundmoshpit.mymovies.data.external.tmdb.TMDBApi
 import com.filundmoshpit.mymovies.data.internal.InternalMovie
 import com.filundmoshpit.mymovies.data.internal.MovieDAO
 import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.domain.MoviesRepository
-import java.lang.Exception
 import java.net.UnknownHostException
 
 class MoviesRepositoryImpl(private val tmdb: TMDBApi, private val internal: MovieDAO) : MoviesRepository {
@@ -17,7 +17,7 @@ class MoviesRepositoryImpl(private val tmdb: TMDBApi, private val internal: Movi
                 val searchResponse = response.body()?.results
 
                 if (searchResponse == null) {
-                    return ExternalError()
+                    return ExternalResponse.ExternalError
                 }
                 else {
                     val movies = ArrayList<MovieEntity>()
@@ -25,42 +25,37 @@ class MoviesRepositoryImpl(private val tmdb: TMDBApi, private val internal: Movi
                     for (externalMovie in searchResponse) {
                         val movie = externalMovie.toMovie()
 
-                        //TODO: In search we don't need favourite and watch later data
-                        val found = internal.getById(movie.getID())
-                        if (found.isNotEmpty()) {
-                            movie.setFavourite(found[0].favourite)
-                            movie.setWatchLater(found[0].watchLater)
-                        }
-                        else {
-                            //Create instance of movie in local DB
+                        //Create instance of movie in local DB
+                        val found = internal.getById(movie.id)
+                        if (found.isEmpty()) {
                             internal.insert(InternalMovie(movie))
                         }
 
                         movies.add(movie)
                     }
 
-                    return ExternalSuccess(movies)
+                    return ExternalResponse.ExternalSuccess(movies)
                 }
             }
             else {
-                return ExternalError()
+                return ExternalResponse.ExternalError
             }
         }
         catch (e: UnknownHostException) {
-            return ExternalError()
+            return ExternalResponse.ExternalError
         }
         catch (e: Exception) {
-            return ExternalError()
+            return ExternalResponse.ExternalError
         }
     }
 
     override fun updateFavourite(movie: MovieEntity) {
         val internalMovie = InternalMovie(
-            movie.getID(),
-            movie.getName(),
-            movie.getDescription(),
-            movie.getImage(),
-            HashMap(),
+            movie.id,
+            movie.name,
+            movie.description,
+            movie.image,
+            movie.rating,
             movie.getFavourite(),
             movie.getWatchLater()
         )
@@ -81,11 +76,11 @@ class MoviesRepositoryImpl(private val tmdb: TMDBApi, private val internal: Movi
 
     override fun updateWatchLater(movie: MovieEntity) {
         val internalMovie = InternalMovie(
-            movie.getID(),
-            movie.getName(),
-            movie.getDescription(),
-            movie.getImage(),
-            HashMap(),
+            movie.id,
+            movie.name,
+            movie.description,
+            movie.image,
+            movie.rating,
             movie.getFavourite(),
             movie.getWatchLater()
         )
@@ -111,6 +106,6 @@ class MoviesRepositoryImpl(private val tmdb: TMDBApi, private val internal: Movi
             return found[0].toMovieEntity()
         }
 
-        return MovieEntity(0, "Unknown", "Unknown", "", HashMap())
+        return MovieEntity(0, "Unknown", "Unknown", "", 0F)
     }
 }

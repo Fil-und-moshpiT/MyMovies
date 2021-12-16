@@ -45,10 +45,10 @@ class SearchListAdapter : ListAdapter<MovieEntity, ListItemViewHolder>(MovieDiff
         }
 
         override fun areContentsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
-            return oldItem.getID() == newItem.getID()
-                    && oldItem.getName() == newItem.getName()
-                    && oldItem.getDescription() == newItem.getDescription()
-                    && oldItem.getImage() == newItem.getImage()
+            return oldItem.id == newItem.id
+                    && oldItem.image == newItem.name
+                    && oldItem.description == newItem.description
+                    && oldItem.image == newItem.image
         }
     }
 }

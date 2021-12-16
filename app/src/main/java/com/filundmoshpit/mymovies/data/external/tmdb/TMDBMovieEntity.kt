@@ -8,6 +8,8 @@ import com.google.gson.annotations.JsonAdapter
 import com.google.gson.annotations.SerializedName
 import java.lang.reflect.Type
 
+data class TMDBResponse(val results: List<TMDBMovieEntity>)
+
 data class TMDBMovieEntity(
     @SerializedName("id")
     val id: Int,
@@ -23,8 +25,7 @@ data class TMDBMovieEntity(
     val image: String?,
 
     @SerializedName("vote_average")
-    @JsonAdapter(GsonRatingDeserializer::class)
-    val rating: HashMap<String, Int>
+    val rating: Float
 ) {
     fun toMovie(): MovieEntity {
         return MovieEntity(id, name, description ?: "", image ?: "", rating)
@@ -42,18 +43,4 @@ data class TMDBMovieEntity(
             return ""
         }
     }
-
-    object GsonRatingDeserializer : JsonDeserializer<HashMap<String, Int>> {
-        override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): HashMap<String, Int> {
-            val result = HashMap<String, Int>()
-
-            json?.run {
-                result["imdb"] = this.asInt
-            }
-
-            return result
-        }
-    }
 }
-
-data class TMDBResponse(val results: List<TMDBMovieEntity>)

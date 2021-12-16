@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Bottom navigation menu-->
+    <string name="navigation_menu_search_label">Поиск</string>
+    <string name="navigation_menu_favourites">Избранное</string>
+    <string name="navigation_menu_watch_later">К просмотру</string>
+    <string name="navigation_menu_settings">Настройки</string>
+
+    <!--Search fragment-->
+    <string name="search_button">Найти</string>
+    <string name="search_error_empty_list">Ничего не найдено</string>
+    <string name="search_error_network">Ошибка сети</string>
+
+    <!--Watch later fragment-->
+    <string name="watch_later_error_empty_list">Список к просмотру пуст</string>
+
+    <!--Favourites fragment-->
+    <string name="favourites_error_empty_list">Список избранного пуст</string>
+
+    <!--Movie card fragment-->
+    <string name="movie_card_watch_later_button">К просмотру</string>
+    <string name="movie_card_favourite_button">Избранное</string>
+
+    <!--Settings fragment-->
+    <string name="settings_switch_dark_theme">Темная тема</string>
+    <string name="settings_language">Язык</string>
+</resources>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--General-->
-    <string name="app_name">MyMovies</string>
-    <string name="long_text_example">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+    <string name="app_name" translatable="false">My Movies</string>
+    <string name="long_text_example" translatable="false">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
 
     <!--Bottom navigation menu-->
     <string name="navigation_menu_search_label">Search</string>
@@ -24,11 +24,17 @@
     <!--Movie card fragment-->
     <string name="movie_card_watch_later_button">Watch Later</string>
     <string name="movie_card_favourite_button">Favourite</string>
-    <string name="movie_card_transition_name">movie_card_transition_name</string>
-    <string name="movie_card_poster_transition_name">movie_card_transition_name</string>
-    <string name="movie_card_title_transition_name">movie_card_title_transition_name</string>
-    <string name="movie_card_description_transition_name">movie_card_description_transition_name</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="movie_card_transition_name" translatable="false">movie_card_transition_name</string>
+    <string name="movie_card_poster_transition_name" translatable="false">movie_card_transition_name</string>
+    <string name="movie_card_title_transition_name" translatable="false">movie_card_title_transition_name</string>
+    <string name="movie_card_description_transition_name" translatable="false">movie_card_description_transition_name</string>
 
+    <!--Settings fragment-->
+    <string name="settings_developer_label" translatable="false">by Dmitry Filimonov</string>
+    <string name="settings_switch_dark_theme">Dark theme</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_english" translatable="false">EN</string>
+    <string name="settings_language_russian" translatable="false">RU</string>
+    <string name="setiings_language_changed_message_en" translatable="false">Restart application to change language</string>
+    <string name="setiings_language_changed_message_ru" translatable="false">Перезапустите приложение чтобы применить выбранный язык</string>
 </resources>

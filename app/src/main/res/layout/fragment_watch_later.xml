@@ -18,6 +18,7 @@
         android:id="@+id/error_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:text="@string/watch_later_error_empty_list"
         android:textAlignment="center"
         android:textSize="20sp" />
@@ -25,6 +26,7 @@
     <ProgressBar
         android:id="@+id/loading_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
 </FrameLayout>

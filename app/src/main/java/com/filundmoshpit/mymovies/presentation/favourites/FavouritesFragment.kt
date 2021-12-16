@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.filundmoshpit.mymovies.BusEvents
 import com.filundmoshpit.mymovies.MainActivity
 import com.filundmoshpit.mymovies.databinding.FragmentFavouritesBinding
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.BusEvents
 import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.flow.collect
 import org.greenrobot.eventbus.EventBus
@@ -82,8 +82,6 @@ class FavouritesFragment : Fragment() {
 
     @Subscribe
     fun onFavouriteChanged(event: BusEvents.FavouriteChanged) {
-//        Toast.makeText(context, "Favourite changed", Toast.LENGTH_SHORT).show()
-
         viewModel.load()
     }
 }
