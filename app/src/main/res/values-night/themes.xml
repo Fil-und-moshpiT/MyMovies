@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.MyMovies" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#d81b60</item>
-        <item name="colorPrimaryVariant">#a00037</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/secondary</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
 <!--        <item name="colorSecondary">@color/teal_200</item>-->
@@ -22,5 +22,23 @@
 
         <item name="colorSurface">@color/black</item>
         <item name="colorOnSurface">@color/white</item>
+
+        <item name="switchStyle">@style/Widget.App.Switch</item>
+    </style>
+
+    <style name="Widget.App.Switch" parent="Widget.MaterialComponents.CompoundButton.Switch">
+        <item name="colorOnSurface">@color/primary</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorControlActivated">@color/primary</item>
+    </style>
+
+    <style name="Widget.App.Button.OutlinedButton.IconOnly" parent="Widget.AppCompat.Button.Borderless">
+        <item name="iconPadding">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
     </style>
 </resources>

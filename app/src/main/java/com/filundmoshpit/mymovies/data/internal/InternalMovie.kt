@@ -10,7 +10,8 @@ data class InternalMovie(
     val id: Int,
     val name: String,
     val description: String,
-    val image: String,
+    val imageSmall: String,
+    val imageBig: String,
     val rating: Float,
     val favourite: Boolean,
     val watchLater: Boolean
@@ -19,17 +20,13 @@ data class InternalMovie(
         movie.id,
         movie.name,
         movie.description,
-        movie.image,
+        movie.imageSmall,
+        movie.imageBig,
         movie.rating,
-        movie.getFavourite(),
-        movie.getWatchLater()
+        movie.favourite,
+        movie.watchLater
     )
 
-    fun toMovieEntity(): MovieEntity {
-        val result = MovieEntity(id, name, description, image, rating)
-        result.setFavourite(favourite)
-        result.setWatchLater(watchLater)
-
-        return result
-    }
+    fun toMovieEntity() =
+        MovieEntity(id, name, description, imageSmall, imageBig, rating, favourite, watchLater)
 }

@@ -1,11 +1,12 @@
 package com.filundmoshpit.mymovies.presentation
 
-import androidx.navigation.findNavController
+import android.content.Intent
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.filundmoshpit.mymovies.NavBottomFragmentsDirections
 import com.filundmoshpit.mymovies.databinding.MovieListItemBinding
 import com.filundmoshpit.mymovies.domain.MovieEntity
+import com.filundmoshpit.mymovies.presentation.movie_card.MovieCardActivity
 
 class ListItemViewHolder(private val itemBinding: MovieListItemBinding) :
     RecyclerView.ViewHolder(itemBinding.root) {
@@ -15,12 +16,13 @@ class ListItemViewHolder(private val itemBinding: MovieListItemBinding) :
     init {
         itemView.setOnClickListener {
             if (movie != null) {
-//                val movieCardTransitionName = itemView.context.getString(R.string.movie_card_transition_name)
-                val action = NavBottomFragmentsDirections.actionNavBottomFragmentsNavMovieCardFragment(movie!!.id)
-//                val extras = FragmentNavigatorExtras(itemView to movieCardTransitionName)
-
-//                itemView.findNavController().navigate(action, extras)
-                itemView.findNavController().navigate(action)
+                ContextCompat.startActivity(
+                    itemView.context,
+                    Intent(itemView.context, MovieCardActivity::class.java).apply {
+                        putExtra("movieId", movie!!.id)
+                    },
+                    null
+                )
             }
         }
     }
@@ -33,7 +35,7 @@ class ListItemViewHolder(private val itemBinding: MovieListItemBinding) :
         itemBinding.movieDescription.text = movie.description
 
         Glide.with(itemView)
-            .load(movie.image)
+            .load(movie.imageSmall)
             .into(itemBinding.moviePoster)
     }
 }

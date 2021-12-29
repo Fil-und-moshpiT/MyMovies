@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
-import com.filundmoshpit.mymovies.MainActivity
+import com.filundmoshpit.mymovies.presentation.MainActivity
 import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.Settings
 import com.filundmoshpit.mymovies.databinding.FragmentSettingsBinding

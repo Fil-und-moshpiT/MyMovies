@@ -6,48 +6,51 @@ import androidx.lifecycle.viewModelScope
 import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.data.external.ExternalResponse
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.domain.usecases.SearchUseCase
+import com.filundmoshpit.mymovies.domain.usecase.SearchUseCase
 import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
 
-    val status = MutableStateFlow(LoadingStatuses.EMPTY)
+    private val _status = MutableStateFlow(LoadingStatuses.EMPTY)
+    private val _errorTextId = MutableStateFlow(ERROR_STRING_ID_EMPTY)
+    private val _query = MutableStateFlow("")
+    private val _movies = MutableStateFlow(ArrayList<MovieEntity>())
 
-    val errorTextId = MutableStateFlow(ERROR_STRING_ID_EMPTY)
-
-    private val query = MutableStateFlow("")
-
-    val movies = MutableStateFlow(ArrayList<MovieEntity>())
+    val status: StateFlow<LoadingStatuses>
+        get() = _status.asStateFlow()
+    val errorTextId: StateFlow<Int>
+        get() = _errorTextId.asStateFlow()
+    val movies: StateFlow<ArrayList<MovieEntity>>
+        get() = _movies.asStateFlow()
 
     private fun setStatus(value: LoadingStatuses) {
-        status.value = value
+        _status.value = value
     }
 
     private fun setError(value: Int) {
-        errorTextId.value = value
+        _errorTextId.value = value
     }
 
     fun getQuery(): String {
-        return query.value
+        return _query.value
     }
 
     fun setQuery(value: String) {
-        query.value = value
+        _query.value = value
     }
 
-    /*fun addMovie(movie: MovieEntity) {
-        movies.value = movies.value.toMutableList().apply { add(movie) } as ArrayList<MovieEntity>
-    }*/
-
     private fun replaceMovies(list: List<MovieEntity>) {
-        movies.value = list as ArrayList<MovieEntity>
+        _movies.value = list as ArrayList<MovieEntity>
     }
 
     private fun clearMovies() {
-        movies.value.clear()
+        _movies.value.clear()
     }
 
     fun search() {
@@ -82,7 +85,7 @@ class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
     }
 }
 
-class SearchViewModelFactory(private val useCase: SearchUseCase) : ViewModelProvider.Factory {
+class SearchViewModelFactory @Inject constructor(private val useCase: SearchUseCase) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return SearchViewModel(useCase) as T

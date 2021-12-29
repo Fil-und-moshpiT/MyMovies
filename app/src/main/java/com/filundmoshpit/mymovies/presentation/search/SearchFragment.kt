@@ -1,41 +1,48 @@
 package com.filundmoshpit.mymovies.presentation.search
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.filundmoshpit.mymovies.MainActivity
 import com.filundmoshpit.mymovies.databinding.FragmentSearchBinding
 import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.presentation.LoadingStatuses
+import com.filundmoshpit.mymovies.presentation.contextComponent
 import kotlinx.coroutines.flow.collect
+import javax.inject.Inject
 
 class SearchFragment : Fragment() {
+
+    @Inject
+    lateinit var viewModelFactory: SearchViewModelFactory
 
     private lateinit var viewModel: SearchViewModel
 
     private lateinit var binding: FragmentSearchBinding
 
-    /*override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onAttach(context: Context) {
+        context.contextComponent.inject(this)
 
-        //Animation
-        exitTransition = Hold()
-        reenterTransition = Hold()
-    }*/
+        super.onAttach(context)
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
 
-        viewModel =
-            ViewModelProvider(requireActivity(), SearchViewModelFactory(MainActivity.searchUseCase))
-                .get(SearchViewModel::class.java)
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            viewModelFactory
+        ).get(SearchViewModel::class.java)
 
         val listAdapter = SearchListAdapter()
 
@@ -55,11 +62,6 @@ class SearchFragment : Fragment() {
 
         initialize()
 
-        //Animation
-        //Required for reenter transition
-        postponeEnterTransition()
-        binding.root.doOnPreDraw { startPostponedEnterTransition() }
-
         return binding.root
     }
 
@@ -73,9 +75,15 @@ class SearchFragment : Fragment() {
         binding.list.visibility = View.GONE
 
         when (status) {
-            LoadingStatuses.EMPTY -> { binding.errorLabel.visibility = View.VISIBLE }
-            LoadingStatuses.LOADING -> { binding.loadingSpinner.visibility = View.VISIBLE }
-            LoadingStatuses.LOADED -> { binding.list.visibility = View.VISIBLE }
+            LoadingStatuses.EMPTY -> {
+                binding.errorLabel.visibility = View.VISIBLE
+            }
+            LoadingStatuses.LOADING -> {
+                binding.loadingSpinner.visibility = View.VISIBLE
+            }
+            LoadingStatuses.LOADED -> {
+                binding.list.visibility = View.VISIBLE
+            }
         }
     }
 

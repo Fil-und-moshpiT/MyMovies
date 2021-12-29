@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".MainActivity">
+    tools:context=".presentation.MainActivity">
 
     <com.google.android.material.navigationrail.NavigationRailView
         android:id="@+id/navigation_menu"
@@ -21,5 +21,4 @@
         android:layout_weight="1"
         app:defaultNavHost="true"
         app:navGraph="@navigation/navigation_graph" />
-
 </LinearLayout>

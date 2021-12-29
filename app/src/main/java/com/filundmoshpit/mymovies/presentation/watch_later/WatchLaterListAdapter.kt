@@ -46,9 +46,10 @@ class WatchLaterListAdapter : ListAdapter<MovieEntity, ListItemViewHolder>(Movie
 
         override fun areContentsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
             return oldItem.id == newItem.id
-                    && oldItem.image == newItem.name
+                    && oldItem.name == newItem.name
                     && oldItem.description == newItem.description
-                    && oldItem.image == newItem.image
+                    && oldItem.imageSmall == newItem.imageSmall
+                    && oldItem.imageBig == newItem.imageBig
         }
     }
 }

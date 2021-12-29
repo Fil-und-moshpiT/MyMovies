@@ -3,9 +3,15 @@ package com.filundmoshpit.mymovies.data.external.tmdb
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
+import javax.inject.Singleton
 
+@Singleton
 interface TMDBApi {
-    //https://api.themoviedb.org/3/movie/76341?api_key=<<api_key>>
+    // https://api.themoviedb.org/3/search/movie?api_key=<<api_key>>&language=en-US&include_adult=false
     @GET("search/movie")
-    fun search(@Query("query") query: String) : Call<TMDBResponse>
+    fun search(@Query("query") query: String) : Call<TMDBMoviesResponse>
+
+    //https://api.themoviedb.org/3/configuration?api_key=<<api_key>>
+    @GET("configuration")
+    fun configuration() : Call<TMDBConfigurationResponse>
 }

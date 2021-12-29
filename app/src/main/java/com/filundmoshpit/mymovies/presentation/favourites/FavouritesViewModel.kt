@@ -4,24 +4,32 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.domain.usecases.FavouritesUseCase
+import com.filundmoshpit.mymovies.domain.usecase.FavouritesUseCase
 import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class FavouritesViewModel(private val useCase: FavouritesUseCase) : ViewModel() {
 
-    val status = MutableStateFlow(LoadingStatuses.EMPTY)
+    private val _status = MutableStateFlow(LoadingStatuses.EMPTY)
+    private val _movies = MutableStateFlow(ArrayList<MovieEntity>())
 
-    val movies = MutableStateFlow(ArrayList<MovieEntity>())
+    val status: StateFlow<LoadingStatuses>
+        get() = _status.asStateFlow()
+
+    val movies: StateFlow<ArrayList<MovieEntity>>
+        get() = _movies.asStateFlow()
 
     private fun setStatus(value: LoadingStatuses) {
-        status.value = value
+        _status.value = value
     }
 
     private fun replaceMovies(list: List<MovieEntity>) {
-        movies.value = list as ArrayList<MovieEntity>
+        _movies.value = list as ArrayList<MovieEntity>
     }
 
     private fun clearMovies() {
@@ -46,7 +54,7 @@ class FavouritesViewModel(private val useCase: FavouritesUseCase) : ViewModel() 
     }
 }
 
-class FavouritesViewModelFactory(private val useCase: FavouritesUseCase) : ViewModelProvider.Factory {
+class FavouritesViewModelFactory @Inject constructor(private val useCase: FavouritesUseCase) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return FavouritesViewModel(useCase) as T

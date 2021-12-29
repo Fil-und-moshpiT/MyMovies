@@ -39,11 +39,6 @@ class FavouritesListAdapter : ListAdapter<MovieEntity, ListItemViewHolder>(Movie
         return count
     }
 
-//    fun removeItem(movieId: Int) {
-//        currentList.removeIf { it.getID() == movieId }
-//        notifyDataSetChanged()
-//    }
-
     object MovieDiffCallback : DiffUtil.ItemCallback<MovieEntity>() {
         override fun areItemsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
             return oldItem == newItem
@@ -51,9 +46,10 @@ class FavouritesListAdapter : ListAdapter<MovieEntity, ListItemViewHolder>(Movie
 
         override fun areContentsTheSame(oldItem: MovieEntity, newItem: MovieEntity): Boolean {
             return oldItem.id == newItem.id
-                    && oldItem.image == newItem.name
+                    && oldItem.name == newItem.name
                     && oldItem.description == newItem.description
-                    && oldItem.image == newItem.image
+                    && oldItem.imageSmall == newItem.imageSmall
+                    && oldItem.imageBig == newItem.imageBig
         }
     }
 }

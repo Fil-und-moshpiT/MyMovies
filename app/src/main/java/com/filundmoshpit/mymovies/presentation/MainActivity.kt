@@ -1,0 +1,129 @@
+package com.filundmoshpit.mymovies.presentation
+
+import android.app.Application
+import android.content.Context
+import android.content.res.Configuration
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.navigation.fragment.NavHostFragment
+import androidx.preference.PreferenceManager
+import com.filundmoshpit.mymovies.ModifiedNavigationUI
+import com.filundmoshpit.mymovies.R
+import com.filundmoshpit.mymovies.Settings
+import com.filundmoshpit.mymovies.databinding.ActivityMainBinding
+import com.filundmoshpit.mymovies.di.ApplicationContextComponent
+import com.filundmoshpit.mymovies.di.DaggerApplicationContextComponent
+import com.google.android.material.navigation.NavigationBarView
+import java.util.*
+
+/*
+TODO:
+    +Add "Search" fragment (Retrofit)
+    +Add Repository class for local and remote data sources
+    +Add "Watch later" fragment (Room)
+    +Add "Favourites" fragment (Room)
+    +Add bottom navigation menu
+    +Check MVVM
+    +Add movie card fragment
+    +Move all strings in resources
+    +Add translation
+    +Add Jetpack Navigation
+    +Add network to database caching while search
+    +Add ViewBinding
+    +Show/hide bottom navigation bar
+    +Add stars rating
+    +Add TMDB
+    -ADD OMDB?
+    Add constructors to internal/external movies
+    +Add universal view holder
+    +Add EventBus to fragments (update watch later & favourite)
+    +Add settings fragment
+    +Add DI (Dagger)
+    Change use cases
+*/
+
+//Dagger
+class MyApplication : Application() {
+
+    lateinit var contextComponent: ApplicationContextComponent
+
+    override fun onCreate() {
+        super.onCreate()
+
+        contextComponent = DaggerApplicationContextComponent.builder().context(this).build()
+    }
+}
+
+val Context.contextComponent: ApplicationContextComponent
+    get() = when (this) {
+        is MyApplication -> contextComponent
+        else -> this.applicationContext.contextComponent
+    }
+
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
+    companion object {
+        lateinit var settingsService: Settings
+    }
+
+    override fun attachBaseContext(baseContext: Context?) {
+        var newContext = baseContext
+
+        if (baseContext != null) {
+            settingsService = Settings(PreferenceManager.getDefaultSharedPreferences(newContext))
+
+            //Load settings
+
+            //Dark theme
+            val systemDarkTheme = when (baseContext.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
+                Configuration.UI_MODE_NIGHT_YES -> true
+                else -> false
+            }
+            val currentDarkTheme = settingsService.darkTheme
+
+            //Change night mode
+            if (systemDarkTheme != currentDarkTheme) {
+                val nightMode = if (currentDarkTheme) MODE_NIGHT_YES else MODE_NIGHT_NO
+
+                AppCompatDelegate.setDefaultNightMode(nightMode)
+            }
+
+            //Language
+            val systemLanguage = Locale.getDefault().language
+            val currentLanguage = settingsService.language
+
+            //Change language
+            if (systemLanguage != currentLanguage) {
+                val configuration = baseContext.resources.configuration
+                configuration.setLocale(Locale.forLanguageTag(currentLanguage))
+
+                newContext = baseContext.createConfigurationContext(configuration)
+            }
+        }
+
+        super.attachBaseContext(newContext)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        contextComponent.inject(this)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        //Navigation
+        val navigationController =
+            (supportFragmentManager.findFragmentById(R.id.navigation_host_fragment) as NavHostFragment).navController
+
+        ModifiedNavigationUI.setupWithNavController(
+            binding.navigationMenu as NavigationBarView,
+            navigationController
+        )
+    }
+}

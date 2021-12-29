@@ -7,11 +7,12 @@ import com.filundmoshpit.mymovies.data.internal.MovieDAO
 import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.domain.MoviesRepository
 import java.net.UnknownHostException
+import javax.inject.Inject
 
-class MoviesRepositoryImpl(private val tmdb: TMDBApi, private val internal: MovieDAO) : MoviesRepository {
+class MoviesRepositoryImpl @Inject constructor(private val external: TMDBApi, private val internal: MovieDAO) : MoviesRepository {
     override fun search(query: String) : ExternalResponse {
         try {
-            val response = tmdb.search(query).execute()
+            val response = external.search(query).execute()
 
             if (response.isSuccessful) {
                 val searchResponse = response.body()?.results
@@ -54,10 +55,11 @@ class MoviesRepositoryImpl(private val tmdb: TMDBApi, private val internal: Movi
             movie.id,
             movie.name,
             movie.description,
-            movie.image,
+            movie.imageSmall,
+            movie.imageBig,
             movie.rating,
-            movie.getFavourite(),
-            movie.getWatchLater()
+            movie.favourite,
+            movie.watchLater
         )
 
         internal.updateFavourite(internalMovie)
@@ -79,10 +81,11 @@ class MoviesRepositoryImpl(private val tmdb: TMDBApi, private val internal: Movi
             movie.id,
             movie.name,
             movie.description,
-            movie.image,
+            movie.imageSmall,
+            movie.imageBig,
             movie.rating,
-            movie.getFavourite(),
-            movie.getWatchLater()
+            movie.favourite,
+            movie.watchLater
         )
 
         internal.updateWatchLater(internalMovie)
@@ -106,6 +109,6 @@ class MoviesRepositoryImpl(private val tmdb: TMDBApi, private val internal: Movi
             return found[0].toMovieEntity()
         }
 
-        return MovieEntity(0, "Unknown", "Unknown", "", 0F)
+        return MovieEntity(0, "Unknown", "Unknown", "", "", 0F)
     }
 }

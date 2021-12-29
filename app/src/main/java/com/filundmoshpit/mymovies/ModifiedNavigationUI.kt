@@ -1,6 +1,5 @@
 package com.filundmoshpit.mymovies
 
-import android.view.View
 import androidx.annotation.IdRes
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -42,20 +41,6 @@ object ModifiedNavigationUI {
                         item.isChecked = true
                     }
                     h++
-                }
-            }
-
-            //Show/hide navigation view
-            when (destination.id) {
-                R.id.nav_movie_card_fragment -> {
-                    if (navigationView.visibility == View.VISIBLE) {
-                        navigationView.visibility = View.INVISIBLE
-                    }
-                }
-                else -> {
-                    if (navigationView.visibility == View.INVISIBLE) {
-                        navigationView.visibility = View.VISIBLE
-                    }
                 }
             }
         }

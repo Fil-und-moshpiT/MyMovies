@@ -1,7 +1,14 @@
 package com.filundmoshpit.mymovies.data.internal
 
 import androidx.room.*
+import javax.inject.Singleton
 
+@Database(entities = [InternalMovie::class], version = 1)
+abstract class MoviesDatabase : RoomDatabase() {
+    abstract fun movieDAO(): MovieDAO
+}
+
+@Singleton
 @Dao
 interface MovieDAO {
 
@@ -52,9 +59,4 @@ interface MovieDAO {
 
         updateWatchLaterRequest(movie.id, movie.watchLater)
     }
-}
-
-@Database(entities = [InternalMovie::class], version = 1)
-abstract class MoviesDatabase : RoomDatabase() {
-    abstract fun movieDAO(): MovieDAO
 }
