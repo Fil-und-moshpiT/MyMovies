@@ -25,7 +25,9 @@ class WatchLaterFragment : Fragment() {
 
     private lateinit var viewModel: WatchLaterViewModel
 
-    private lateinit var binding: FragmentWatchLaterBinding
+    private var _binding: FragmentWatchLaterBinding? = null
+    private val binding: FragmentWatchLaterBinding
+        get() = _binding!!
 
     private var listAdapter = WatchLaterListAdapter()
 
@@ -58,13 +60,19 @@ class WatchLaterFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentWatchLaterBinding.inflate(inflater, container, false)
+        _binding = FragmentWatchLaterBinding.inflate(inflater, container, false)
 
         binding.list.setHasFixedSize(true)
         binding.list.itemAnimator = null
         binding.list.adapter = listAdapter
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _binding = null
     }
 
     override fun onDestroy() {

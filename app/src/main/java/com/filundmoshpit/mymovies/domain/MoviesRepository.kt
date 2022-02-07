@@ -4,7 +4,7 @@ import com.filundmoshpit.mymovies.data.external.ExternalResponse
 
 interface MoviesRepository {
 
-    fun search(query: String) : ExternalResponse
+    suspend fun search(query: String) : ExternalResponse
 
     fun updateFavourite(movie: MovieEntity)
 

@@ -10,11 +10,27 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 class MoviesRepositoryImpl @Inject constructor(private val external: TMDBApi, private val internal: MovieDAO) : MoviesRepository {
-    override fun search(query: String) : ExternalResponse {
+    override suspend fun search(query: String) : ExternalResponse {
         try {
-            val response = external.search(query).execute()
+            val response = external.search(query)
 
-            if (response.isSuccessful) {
+            val movies = ArrayList<MovieEntity>()
+
+            for (externalMovie in response.results) {
+                val movie = externalMovie.toMovie()
+
+                //Create instance of movie in local DB
+                val found = internal.getById(movie.id)
+                if (found.isEmpty()) {
+                    internal.insert(InternalMovie(movie))
+                }
+
+                movies.add(movie)
+            }
+
+            return ExternalResponse.ExternalSuccess(movies)
+
+            /*if (response.isSuccessful) {
                 val searchResponse = response.body()?.results
 
                 if (searchResponse == null) {
@@ -40,7 +56,7 @@ class MoviesRepositoryImpl @Inject constructor(private val external: TMDBApi, pr
             }
             else {
                 return ExternalResponse.ExternalError
-            }
+            }*/
         }
         catch (e: UnknownHostException) {
             return ExternalResponse.ExternalError

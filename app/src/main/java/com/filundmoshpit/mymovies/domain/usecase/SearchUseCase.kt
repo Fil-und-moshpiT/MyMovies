@@ -5,7 +5,7 @@ import com.filundmoshpit.mymovies.domain.MoviesRepository
 import javax.inject.Inject
 
 class SearchUseCase @Inject constructor(private val repository: MoviesRepository) {
-    fun search(query: String): ExternalResponse {
+    suspend fun search(query: String): ExternalResponse {
         return repository.search(query)
     }
 }

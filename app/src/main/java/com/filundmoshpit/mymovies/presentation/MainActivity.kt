@@ -1,6 +1,5 @@
 package com.filundmoshpit.mymovies.presentation
 
-import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
@@ -14,8 +13,6 @@ import com.filundmoshpit.mymovies.ModifiedNavigationUI
 import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.Settings
 import com.filundmoshpit.mymovies.databinding.ActivityMainBinding
-import com.filundmoshpit.mymovies.di.ApplicationContextComponent
-import com.filundmoshpit.mymovies.di.DaggerApplicationContextComponent
 import com.google.android.material.navigation.NavigationBarView
 import java.util.*
 
@@ -43,25 +40,8 @@ TODO:
     +Add settings fragment
     +Add DI (Dagger)
     Change use cases
+    Add injection to settings
 */
-
-//Dagger
-class MyApplication : Application() {
-
-    lateinit var contextComponent: ApplicationContextComponent
-
-    override fun onCreate() {
-        super.onCreate()
-
-        contextComponent = DaggerApplicationContextComponent.builder().context(this).build()
-    }
-}
-
-val Context.contextComponent: ApplicationContextComponent
-    get() = when (this) {
-        is MyApplication -> contextComponent
-        else -> this.applicationContext.contextComponent
-    }
 
 class MainActivity : AppCompatActivity() {
 

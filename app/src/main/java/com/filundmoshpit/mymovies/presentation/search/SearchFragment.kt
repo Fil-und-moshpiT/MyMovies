@@ -24,7 +24,9 @@ class SearchFragment : Fragment() {
 
     private lateinit var viewModel: SearchViewModel
 
-    private lateinit var binding: FragmentSearchBinding
+    private var _binding: FragmentSearchBinding? = null
+    private val binding: FragmentSearchBinding
+        get() = _binding!!
 
     override fun onAttach(context: Context) {
         context.contextComponent.inject(this)
@@ -37,7 +39,7 @@ class SearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         viewModel = ViewModelProvider(
             requireActivity(),
@@ -63,6 +65,12 @@ class SearchFragment : Fragment() {
         initialize()
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _binding = null
     }
 
     private fun initialize() {

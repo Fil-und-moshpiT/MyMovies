@@ -24,7 +24,9 @@ class FavouritesFragment : Fragment() {
     lateinit var viewModelFactory: FavouritesViewModelFactory
     private lateinit var viewModel: FavouritesViewModel
 
-    private lateinit var binding: FragmentFavouritesBinding
+    private var _binding: FragmentFavouritesBinding? = null
+    private val binding: FragmentFavouritesBinding
+        get() = _binding!!
 
     private var listAdapter = FavouritesListAdapter()
 
@@ -57,13 +59,19 @@ class FavouritesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentFavouritesBinding.inflate(inflater, container, false)
+        _binding = FragmentFavouritesBinding.inflate(inflater, container, false)
 
         binding.list.setHasFixedSize(true)
         binding.list.itemAnimator = null
         binding.list.adapter = listAdapter
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        _binding = null
     }
 
     override fun onDestroy() {
