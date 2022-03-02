@@ -1,5 +1,5 @@
 # MyMovies
-My pet project that allows you to search movies and save them to watch later or make them favourite.
+This application allows you to search movies and save them to watch later or make them favourite.
 
 Stack:
 + Retrofit
