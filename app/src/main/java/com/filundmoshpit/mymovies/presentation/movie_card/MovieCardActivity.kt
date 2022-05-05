@@ -62,15 +62,15 @@ class MovieCardActivity : AppCompatActivity() {
         lifecycleScope.launchWhenCreated { viewModel.movie.collect { onMovieChanged(it) } }
 
         //Get data
-        val movieId = intent.getIntExtra("movieId", -1)
-        if (movieId == -1) {
+        val movie = intent.getSerializableExtra("movie") as MovieEntity?
+        if (movie == null) {
             viewModel.setStatus(LoadingStatuses.LOADED)
         } else {
-            viewModel.load(movieId)
+            viewModel.load(movie)
         }
     }
 
-    private fun onStatusChange(status: LoadingStatuses) {}
+    private fun onStatusChange(status: LoadingStatuses) {  }
 
     private fun onMovieChanged(movie: MovieEntity?) {
         if (movie == null) {

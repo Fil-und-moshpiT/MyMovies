@@ -18,28 +18,8 @@ import java.util.*
 
 /*
 TODO:
-    +Add "Search" fragment (Retrofit)
-    +Add Repository class for local and remote data sources
-    +Add "Watch later" fragment (Room)
-    +Add "Favourites" fragment (Room)
-    +Add bottom navigation menu
-    +Check MVVM
-    +Add movie card fragment
-    +Move all strings in resources
-    +Add translation
-    +Add Jetpack Navigation
-    +Add network to database caching while search
-    +Add ViewBinding
-    +Show/hide bottom navigation bar
-    +Add stars rating
-    +Add TMDB
     -ADD OMDB?
     Add constructors to internal/external movies
-    +Add universal view holder
-    +Add EventBus to fragments (update watch later & favourite)
-    +Add settings fragment
-    +Add DI (Dagger)
-    Change use cases
     Add injection to settings
 */
 

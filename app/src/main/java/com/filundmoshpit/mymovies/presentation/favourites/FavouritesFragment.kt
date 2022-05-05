@@ -8,14 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.filundmoshpit.mymovies.BusEvents
-import com.filundmoshpit.mymovies.presentation.contextComponent
 import com.filundmoshpit.mymovies.databinding.FragmentFavouritesBinding
-import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.presentation.LoadingStatuses
+import com.filundmoshpit.mymovies.presentation.contextComponent
 import kotlinx.coroutines.flow.collect
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 
 class FavouritesFragment : Fragment() {
@@ -39,19 +35,23 @@ class FavouritesFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        EventBus.getDefault().register(this)
-
         viewModel = ViewModelProvider(
             requireActivity(),
             viewModelFactory
         ).get(FavouritesViewModel::class.java)
 
         //ViewModel observers
-        lifecycleScope.launchWhenCreated { viewModel.movies.collect { listAdapter.submitList(it as MutableList<MovieEntity>) } }
-        lifecycleScope.launchWhenStarted { viewModel.status.collect { onStatusChange(it) } }
+        lifecycleScope.launchWhenCreated {
+            viewModel.movies.collect {
+                listAdapter.submitList(it)
+            }
+        }
 
-        //Load data
-        viewModel.load()
+        lifecycleScope.launchWhenStarted {
+            viewModel.status.collect {
+                onStatusChange(it)
+            }
+        }
     }
 
     override fun onCreateView(
@@ -74,12 +74,6 @@ class FavouritesFragment : Fragment() {
         _binding = null
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        EventBus.getDefault().unregister(this)
-    }
-
     private fun onStatusChange(status: LoadingStatuses) {
         binding.errorLabel.visibility = View.GONE
         binding.loadingSpinner.visibility = View.GONE
@@ -96,10 +90,5 @@ class FavouritesFragment : Fragment() {
                 binding.list.visibility = View.VISIBLE
             }
         }
-    }
-
-    @Subscribe
-    fun onFavouriteChanged(event: BusEvents.FavouriteChanged) {
-        viewModel.load()
     }
 }

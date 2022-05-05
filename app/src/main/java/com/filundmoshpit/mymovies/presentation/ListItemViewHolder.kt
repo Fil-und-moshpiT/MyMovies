@@ -19,7 +19,7 @@ class ListItemViewHolder(private val itemBinding: MovieListItemBinding) :
                 ContextCompat.startActivity(
                     itemView.context,
                     Intent(itemView.context, MovieCardActivity::class.java).apply {
-                        putExtra("movieId", movie!!.id)
+                        putExtra("movie", movie)
                     },
                     null
                 )

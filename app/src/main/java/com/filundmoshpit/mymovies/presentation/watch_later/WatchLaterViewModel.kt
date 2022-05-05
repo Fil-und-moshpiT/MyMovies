@@ -4,59 +4,38 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.domain.usecase.WatchLaterUseCase
+import com.filundmoshpit.mymovies.domain.usecase.LoadWatchLaterUseCase
 import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class WatchLaterViewModel(private val useCase: WatchLaterUseCase) : ViewModel() {
+class WatchLaterViewModel(private val useCase: LoadWatchLaterUseCase) : ViewModel() {
 
     private val _status = MutableStateFlow(LoadingStatuses.EMPTY)
-    private val _movies = MutableStateFlow(ArrayList<MovieEntity>())
+    val status: StateFlow<LoadingStatuses> = _status
 
-    val status: StateFlow<LoadingStatuses>
-        get() = _status.asStateFlow()
+    private val _movies = MutableStateFlow(emptyList<MovieEntity>())
+    val movies: StateFlow<List<MovieEntity>> = _movies
 
-    val movies: StateFlow<ArrayList<MovieEntity>>
-        get() = _movies.asStateFlow()
-
-    private fun setStatus(value: LoadingStatuses) {
-        _status.value = value
-    }
-
-    private fun replaceMovies(list: List<MovieEntity>) {
-        _movies.value = list as ArrayList<MovieEntity>
-    }
-
-    private fun clearMovies() {
-        _movies.value.clear()
-    }
-
-    fun load() {
-        setStatus(LoadingStatuses.LOADING)
-        clearMovies()
-
+    init {
         viewModelScope.launch(Dispatchers.IO) {
-            val founded = useCase.load()
+            _status.value = LoadingStatuses.LOADING
 
-            if (founded.isNotEmpty()) {
-                replaceMovies(founded)
-                setStatus(LoadingStatuses.LOADED)
-            }
-            else {
-                setStatus(LoadingStatuses.EMPTY)
+            useCase.load().collect {
+                _movies.value = it
+                _status.value = if (it.isEmpty()) LoadingStatuses.EMPTY else LoadingStatuses.LOADED
             }
         }
     }
 }
 
-class WatchLaterViewModelFactory @Inject constructor(private val useCase: WatchLaterUseCase) : ViewModelProvider.Factory {
+class WatchLaterViewModelFactory @Inject constructor(private val useCase: LoadWatchLaterUseCase) :
+    ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return WatchLaterViewModel(useCase) as T
-    }
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = WatchLaterViewModel(useCase) as T
 }

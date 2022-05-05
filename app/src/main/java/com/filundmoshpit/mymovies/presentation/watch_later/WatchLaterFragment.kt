@@ -8,14 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.filundmoshpit.mymovies.BusEvents
-import com.filundmoshpit.mymovies.presentation.contextComponent
 import com.filundmoshpit.mymovies.databinding.FragmentWatchLaterBinding
-import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.presentation.LoadingStatuses
+import com.filundmoshpit.mymovies.presentation.contextComponent
 import kotlinx.coroutines.flow.collect
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 
 class WatchLaterFragment : Fragment() {
@@ -40,19 +36,26 @@ class WatchLaterFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        EventBus.getDefault().register(this)
-
         viewModel = ViewModelProvider(
             requireActivity(),
             viewModelFactory
         ).get(WatchLaterViewModel::class.java)
 
         //ViewModel observers
-        lifecycleScope.launchWhenCreated { viewModel.movies.collect { listAdapter.submitList(it as MutableList<MovieEntity>) } }
-        lifecycleScope.launchWhenStarted { viewModel.status.collect { onStatusChange(it) } }
+        lifecycleScope.launchWhenCreated {
+            viewModel.movies.collect {
+                listAdapter.submitList(it)
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.status.collect {
+                onStatusChange(it)
+            }
+        }
 
         //Load data
-        viewModel.load()
+        //viewModel.load()
     }
 
     override fun onCreateView(
@@ -75,12 +78,6 @@ class WatchLaterFragment : Fragment() {
         _binding = null
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        EventBus.getDefault().unregister(this)
-    }
-
     private fun onStatusChange(status: LoadingStatuses) {
         binding.errorLabel.visibility = View.GONE
         binding.loadingSpinner.visibility = View.GONE
@@ -97,10 +94,5 @@ class WatchLaterFragment : Fragment() {
                 binding.list.visibility = View.VISIBLE
             }
         }
-    }
-
-    @Subscribe
-    fun onWatchLaterChanged(event: BusEvents.WatchLaterChanged) {
-        viewModel.load()
     }
 }

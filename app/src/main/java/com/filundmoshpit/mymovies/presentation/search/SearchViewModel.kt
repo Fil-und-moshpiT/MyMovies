@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.filundmoshpit.mymovies.R
 import com.filundmoshpit.mymovies.data.external.ExternalResponse
 import com.filundmoshpit.mymovies.domain.MovieEntity
-import com.filundmoshpit.mymovies.domain.usecase.SearchUseCase
+import com.filundmoshpit.mymovies.domain.usecase.SearchMoviesUseCase
 import com.filundmoshpit.mymovies.presentation.LoadingStatuses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
+class SearchViewModel(private val useCase: SearchMoviesUseCase) : ViewModel() {
 
     private val _status = MutableStateFlow(LoadingStatuses.EMPTY)
     private val _errorTextId = MutableStateFlow(ERROR_STRING_ID_EMPTY)
@@ -85,9 +85,8 @@ class SearchViewModel(private val useCase: SearchUseCase) : ViewModel() {
     }
 }
 
-class SearchViewModelFactory @Inject constructor(private val useCase: SearchUseCase) : ViewModelProvider.Factory {
+class SearchViewModelFactory @Inject constructor(private val useCase: SearchMoviesUseCase) : ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return SearchViewModel(useCase) as T
-    }
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T = SearchViewModel(useCase) as T
 }

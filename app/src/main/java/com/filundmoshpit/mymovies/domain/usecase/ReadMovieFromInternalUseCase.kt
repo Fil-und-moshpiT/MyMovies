@@ -4,8 +4,8 @@ import com.filundmoshpit.mymovies.domain.MovieEntity
 import com.filundmoshpit.mymovies.domain.MoviesRepository
 import javax.inject.Inject
 
-class WatchLaterUseCase @Inject constructor(private val repository: MoviesRepository) {
-    fun load() : List<MovieEntity> {
-        return repository.getWatchLater()
+class ReadMovieFromInternalUseCase @Inject constructor(private val repository: MoviesRepository) {
+    fun getByID(id: Int): MovieEntity {
+        return repository.getMovieByID(id)
     }
 }

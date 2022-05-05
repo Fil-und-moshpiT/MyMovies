@@ -1,5 +1,7 @@
 package com.filundmoshpit.mymovies.domain
 
+import java.io.Serializable
+
 //Uses in UI lists
 class MovieEntity(
     val id: Int,
@@ -10,7 +12,7 @@ class MovieEntity(
     val rating: Float,
     var favourite: Boolean = false,
     var watchLater: Boolean = false
-) {
+) : Serializable {
     fun changeFavourite() {
         favourite = !favourite
     }

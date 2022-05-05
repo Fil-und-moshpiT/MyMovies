@@ -1,6 +1,7 @@
 package com.filundmoshpit.mymovies.data.internal
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Singleton
 
 @Database(entities = [InternalMovie::class], version = 1)
@@ -29,7 +30,7 @@ interface MovieDAO {
     fun getById(id: Int): List<InternalMovie>
 
     @Query("SELECT * FROM internalmovie WHERE internalmovie.favourite")
-    fun getFavourites(): List<InternalMovie>
+    fun getFavourites(): Flow<List<InternalMovie>>
 
     @Query("UPDATE internalmovie SET favourite = :value WHERE id = :id")
     fun updateFavouriteRequest(id: Int, value: Boolean)
@@ -40,12 +41,18 @@ interface MovieDAO {
         if (found.isEmpty()) {
             insertRequest(movie)
         }
+        else {
+            found.filterNot { it == movie }.first {
+                insertRequest(movie)
+                true
+            }
+        }
 
         updateFavouriteRequest(movie.id, movie.favourite)
     }
 
     @Query("SELECT * FROM internalmovie WHERE internalmovie.watchLater")
-    fun getWatchLater(): List<InternalMovie>
+    fun getWatchLater(): Flow<List<InternalMovie>>
 
     @Query("UPDATE internalmovie SET watchLater = :value WHERE id = :id")
     fun updateWatchLaterRequest(id: Int, value: Boolean)

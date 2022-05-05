@@ -95,9 +95,6 @@ dependencies {
     //Bottom navigation bar
     implementation("com.google.android.material:material:1.4.0")
 
-    //GreenRobot EventBus
-    implementation("org.greenrobot:eventbus:3.3.1")
-
     //Shared preferences
     implementation("androidx.preference:preference-ktx:1.1.1")
 
